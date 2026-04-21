@@ -46,6 +46,42 @@ def test_cli_check_fails() -> None:
     assert code == 1
 
 
+def test_cli_schema_check_passes() -> None:
+    code = main(
+        [
+            "schema-check",
+            "--root",
+            str(ROOT),
+            "--receipt",
+            str(ROOT / "examples" / "receipts" / "passing.json"),
+        ]
+    )
+
+    assert code == 0
+
+
+def test_cli_schema_check_fails_and_returns_json(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    code = main(
+        [
+            "schema-check",
+            "--root",
+            str(ROOT),
+            "--receipt",
+            str(ROOT / "examples" / "receipts" / "failing.json"),
+            "--json",
+        ]
+    )
+
+    assert code == 1
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["ok"] is False
+    assert payload["receipt"] == "examples/receipts/failing.json"
+    assert payload["schema"].endswith("schemas/receipt.schema.json")
+    assert any("status" in message for message in payload["errors"])
+
+
 def test_cli_report_json_outputs_structured_report(capsys: pytest.CaptureFixture[str]) -> None:
     code = main(
         [

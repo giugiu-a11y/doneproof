@@ -26,6 +26,7 @@ classifiers = [
   "Topic :: Software Development :: Version Control :: Git"
 ]
 dependencies = [
+  "jsonschema>=4.25.0",
   "PyYAML>=6.0"
 ]
 
@@ -49,6 +50,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 doneproof = ["templates/*"]
+"doneproof.schemas" = ["*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

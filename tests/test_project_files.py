@@ -17,6 +17,15 @@ def test_json_schema_loads() -> None:
     assert "task" in schema["required"]
 
 
+def test_packaged_schema_matches_public_schema() -> None:
+    public_schema = (ROOT / "schemas" / "receipt.schema.json").read_text(encoding="utf-8")
+    packaged_schema = (
+        ROOT / "src" / "doneproof" / "schemas" / "receipt.schema.json"
+    ).read_text(encoding="utf-8")
+
+    assert packaged_schema == public_schema
+
+
 def test_github_yaml_files_parse() -> None:
     yaml_paths = [
         ROOT / "action.yml",

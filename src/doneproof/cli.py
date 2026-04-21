@@ -14,6 +14,7 @@ from .doctor import run_doctor
 from .git import changed_files, git_diff_summary
 from .policy import init_project, load_policy
 from .receipt import ValidationResult, build_receipt, load_receipt, validate_receipt, write_receipt
+from .schema import validate_receipt_schema
 
 DEFAULT_RECEIPT = ".doneproof/receipts/latest.json"
 
@@ -122,6 +123,31 @@ def main(argv: list[str] | None = None) -> int:
     )
     doctor_parser.add_argument("--json", action="store_true", help="Print machine-readable result.")
 
+    schema_check_parser = subcommands.add_parser(
+        "schema-check",
+        help="Validate receipt JSON against the bundled schema.",
+    )
+    schema_check_parser.add_argument(
+        "--root",
+        default=".",
+        help="Repository root. Defaults to current directory.",
+    )
+    schema_check_parser.add_argument(
+        "--receipt",
+        default=DEFAULT_RECEIPT,
+        help=f"Path to receipt JSON. Defaults to {DEFAULT_RECEIPT}.",
+    )
+    schema_check_parser.add_argument(
+        "--schema",
+        default="",
+        help="Optional path to schema JSON. Defaults to bundled schema.",
+    )
+    schema_check_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Print machine-readable result.",
+    )
+
     evidence_parser = subcommands.add_parser("evidence", help="Create local evidence artifacts.")
     evidence_subcommands = evidence_parser.add_subparsers(
         dest="evidence_command",
@@ -167,6 +193,8 @@ def main(argv: list[str] | None = None) -> int:
         return _new(args)
     if args.command == "doctor":
         return _doctor(args)
+    if args.command == "schema-check":
+        return _schema_check(args)
     if args.command == "evidence":
         return _evidence(args)
     parser.error(f"Unknown command: {args.command}")
@@ -318,6 +346,40 @@ def _doctor(args: argparse.Namespace) -> int:
             print(f"error: {error}")
         for warning in result.warnings:
             print(f"warning: {warning}")
+    return 0 if result.ok else 1
+
+
+def _schema_check(args: argparse.Namespace) -> int:
+    root = Path(args.root).expanduser().resolve()
+    receipt_path = _resolve_receipt_path(root, args.receipt)
+    schema_path = _resolve_receipt_path(root, args.schema) if args.schema else None
+    try:
+        receipt = load_receipt(receipt_path)
+        result = validate_receipt_schema(receipt, schema_path=schema_path)
+    except ValueError as exc:
+        if args.json:
+            print(json.dumps({"ok": False, "errors": [str(exc)]}, indent=2))
+        else:
+            print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
+
+    if args.json:
+        print(
+            json.dumps(
+                {
+                    "ok": result.ok,
+                    "receipt": _display_path(receipt_path, root),
+                    "schema": _display_path(result.schema_path, root),
+                    "errors": result.errors,
+                },
+                indent=2,
+            )
+        )
+    else:
+        state = "PASS" if result.ok else "FAIL"
+        print(f"DoneProof schema: {state}")
+        for error in result.errors:
+            print(f"error: {error}")
     return 0 if result.ok else 1
 
 
