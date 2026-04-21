@@ -10,6 +10,7 @@ Status: public repo open; latest release gate documented below; social launch no
 - [x] Run `make prepublish`.
 - [x] Run `doneproof doctor`.
 - [x] Run `doneproof check`.
+- [x] Run `doneproof schema-check`.
 - [x] Search for private paths and secrets.
 - [x] Confirm `ACTIVE_VERSION.json`, `PROJECT_STATUS.md`, and local `AGENTS.md` are not committed.
 - [x] Review README quickstart against real command output.

@@ -16,6 +16,7 @@ doneproof new \
   --risk "Manual browser check not performed"
 
 doneproof check
+doneproof schema-check
 doneproof report
 ```
 

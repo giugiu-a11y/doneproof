@@ -76,6 +76,7 @@ doneproof new \
   --evidence "test:pytest passed" \
   --risk "Manual browser check not performed"
 doneproof check
+doneproof schema-check
 doneproof evidence git-diff
 doneproof evidence git-diff --mode staged
 doneproof report
@@ -107,6 +108,7 @@ Passing receipt:
 
 ```bash
 doneproof check --receipt examples/receipts/passing.json
+doneproof schema-check --receipt examples/receipts/passing.json
 ```
 
 ```text
@@ -117,6 +119,7 @@ Failing receipt:
 
 ```bash
 doneproof check --receipt examples/receipts/failing.json
+doneproof schema-check --receipt examples/receipts/failing.json
 ```
 
 ```text
@@ -133,6 +136,7 @@ error: evidence needs at least 1 item(s)
 doneproof init               # create policy and agent templates
 doneproof new                # create a receipt draft
 doneproof check              # validate a receipt
+doneproof schema-check       # validate receipt JSON shape against schema
 doneproof evidence git-diff  # write a sanitized git diff summary
 doneproof evidence git-diff --mode staged
 doneproof report             # print a human-readable receipt
@@ -141,7 +145,7 @@ doneproof badge              # print a compact receipt badge
 doneproof doctor             # check local setup
 ```
 
-`check` and `report` default to:
+`check`, `schema-check`, and `report` default to:
 
 ```text
 .doneproof/receipts/latest.json

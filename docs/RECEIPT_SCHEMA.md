@@ -8,6 +8,18 @@ Machine-readable schema:
 schemas/receipt.schema.json
 ```
 
+Validate a receipt against the schema:
+
+```bash
+doneproof schema-check --receipt .doneproof/receipts/latest.json
+```
+
+For automation output:
+
+```bash
+doneproof schema-check --receipt .doneproof/receipts/latest.json --json
+```
+
 ## Required Fields
 
 ```json
