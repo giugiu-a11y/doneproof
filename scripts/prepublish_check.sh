@@ -45,8 +45,13 @@ printf '# Smoke\n' > /tmp/doneproof-smoke/README.md
 "${UV_RUN[@]}" doneproof check --root /tmp/doneproof-smoke
 
 "${UV_RUN[@]}" doneproof check --root . --receipt examples/receipts/passing.json
+"${UV_RUN[@]}" doneproof schema-check --root . --receipt examples/receipts/passing.json
 if "${UV_RUN[@]}" doneproof check --root . --receipt examples/receipts/failing.json >/tmp/doneproof-failing-check.log 2>&1; then
   echo "Expected failing fixture to fail" >&2
+  exit 1
+fi
+if "${UV_RUN[@]}" doneproof schema-check --root . --receipt examples/receipts/failing.json >/tmp/doneproof-failing-schema-check.log 2>&1; then
+  echo "Expected failing fixture to fail schema check" >&2
   exit 1
 fi
 if [[ -f .doneproof/receipts/latest.json ]]; then

@@ -20,10 +20,12 @@ smoke:
 	$(UV_RUN) doneproof doctor --root /tmp/doneproof-smoke
 	$(UV_RUN) doneproof evidence git-diff --root /tmp/doneproof-smoke
 	$(UV_RUN) doneproof check --root . --receipt examples/receipts/passing.json
+	$(UV_RUN) doneproof schema-check --root . --receipt examples/receipts/passing.json
 	$(UV_RUN) doneproof report --root . --receipt examples/receipts/passing.json
 	$(UV_RUN) doneproof new --root /tmp/doneproof-smoke --task "Smoke task" --changed-file README.md --command "passed:echo ok" --evidence "smoke:echo ok" --risk "Example only"
 	$(UV_RUN) doneproof check --root /tmp/doneproof-smoke
 	! $(UV_RUN) doneproof check --root . --receipt examples/receipts/failing.json
+	! $(UV_RUN) doneproof schema-check --root . --receipt examples/receipts/failing.json
 
 check: lint test compile smoke
 
