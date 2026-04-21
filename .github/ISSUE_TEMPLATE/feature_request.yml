@@ -1,0 +1,30 @@
+name: Feature request
+description: Suggest a focused DoneProof improvement.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please keep the request focused on evidence, receipts, handoffs, policy, or agent workflow safety.
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: What agent workflow should this improve?
+    validations:
+      required: true
+  - type: textarea
+    id: non-goal
+    attributes:
+      label: Non-goal
+      description: What should DoneProof avoid doing?
+    validations:
+      required: false
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What should DoneProof do?
+    validations:
+      required: true

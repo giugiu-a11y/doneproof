@@ -1,0 +1,38 @@
+name: Agent integration
+description: Request or improve a DoneProof integration guide for an AI agent workflow.
+title: "[Integration]: "
+labels: ["integration"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Keep examples sanitized. Do not include tokens, private paths, customer names, or private repo details.
+  - type: input
+    id: agent
+    attributes:
+      label: Agent or workflow
+      description: "Example: Codex, Claude Code, Cursor, Aider, Cline, OpenCode, custom local agent"
+    validations:
+      required: true
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Workflow
+      description: How should DoneProof fit into this agent workflow?
+    validations:
+      required: true
+  - type: textarea
+    id: receipt
+    attributes:
+      label: Receipt expectation
+      description: What should the agent record before handing off?
+    validations:
+      required: true
+  - type: textarea
+    id: risk
+    attributes:
+      label: Risk to avoid
+      description: What should this integration avoid doing?
+    validations:
+      required: false
+

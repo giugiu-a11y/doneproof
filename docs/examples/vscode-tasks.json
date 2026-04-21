@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "DoneProof: check receipt",
+      "type": "shell",
+      "command": "doneproof check --receipt .doneproof/receipts/latest.json",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "DoneProof: report receipt",
+      "type": "shell",
+      "command": "doneproof report --receipt .doneproof/receipts/latest.json",
+      "problemMatcher": []
+    },
+    {
+      "label": "DoneProof: create receipt draft",
+      "type": "shell",
+      "command": "doneproof new --task \"${input:doneproofTask}\" --changed-file \"${input:doneproofChangedFile}\" --command \"passed:${input:doneproofCommand}\" --evidence \"test:${input:doneproofCommand} passed\" --risk \"${input:doneproofRisk}\"",
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "doneproofTask",
+      "type": "promptString",
+      "description": "Task covered by this receipt"
+    },
+    {
+      "id": "doneproofChangedFile",
+      "type": "promptString",
+      "description": "One changed file to start the receipt",
+      "default": "README.md"
+    },
+    {
+      "id": "doneproofCommand",
+      "type": "promptString",
+      "description": "Verification command that passed",
+      "default": "python -m pytest"
+    },
+    {
+      "id": "doneproofRisk",
+      "type": "promptString",
+      "description": "Remaining risk or review note",
+      "default": "Manual review still required"
+    }
+  ]
+}

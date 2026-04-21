@@ -1,0 +1,50 @@
+name: Bug report
+description: Report a DoneProof bug with sanitized evidence.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not paste secrets, private paths, customer names, or private project data.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What happened?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: DoneProof version
+      description: "Example: 0.1.1"
+    validations:
+      required: false
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, and install method.
+    validations:
+      required: false
+  - type: textarea
+    id: command
+    attributes:
+      label: Command
+      description: Paste the sanitized command you ran.
+    validations:
+      required: false
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: receipt
+    attributes:
+      label: Sanitized receipt or command output
+      description: Paste only sanitized output.
+    validations:
+      required: false

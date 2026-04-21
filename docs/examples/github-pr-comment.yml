@@ -1,0 +1,81 @@
+name: DoneProof PR Comment
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  receipt-comment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install DoneProof
+        run: python -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@v0.4.0"
+
+      - name: Build receipt comment
+        id: doneproof
+        shell: bash
+        run: |
+          set +e
+          doneproof report --receipt .doneproof/receipts/latest.json --format json > doneproof-report.json
+          status=$?
+          doneproof badge --receipt .doneproof/receipts/latest.json --format markdown > doneproof-badge.md || true
+          {
+            echo "## DoneProof receipt"
+            echo
+            cat doneproof-badge.md
+            echo
+            echo "<details><summary>Report JSON</summary>"
+            echo
+            echo '```json'
+            cat doneproof-report.json
+            echo '```'
+            echo
+            echo "</details>"
+          } > doneproof-comment.md
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+
+      - name: Upsert PR comment
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require("fs");
+            const marker = "<!-- doneproof-receipt-comment -->";
+            const body = `${marker}\n${fs.readFileSync("doneproof-comment.md", "utf8")}`;
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+            });
+            const previous = comments.find((comment) =>
+              comment.user.type === "Bot" && comment.body.includes(marker)
+            );
+            if (previous) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: previous.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body,
+              });
+            }
+
+      - name: Fail when the receipt is invalid
+        if: steps.doneproof.outputs.status != '0'
+        run: exit 1

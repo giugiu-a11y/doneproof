@@ -1,0 +1,35 @@
+schema_version: "1.0"
+status:
+  allowed:
+    - awaiting_review
+    - blocked
+    - failed
+  forbidden:
+    - done
+    - complete
+    - completed
+    - validated
+    - 100%
+    - pronto
+required_fields:
+  - task
+  - status
+  - summary
+  - changed_files
+  - commands
+  - evidence
+  - risks
+minimums:
+  changed_files: 1
+  commands: 1
+  evidence: 1
+claims:
+  forbidden_phrases:
+    - 100%
+    - fully validated
+    - validated
+    - complete
+    - completed
+    - done
+    - pronto
+    - funcionando perfeitamente

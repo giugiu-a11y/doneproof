@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="520" viewBox="0 0 980 520" role="img" aria-labelledby="title desc">
+  <title id="title">DoneProof terminal demo</title>
+  <desc id="desc">A terminal-style demo showing DoneProof failing a weak receipt and passing a receipt with evidence.</desc>
+  <rect width="980" height="520" fill="#f6f7f2"/>
+  <rect x="44" y="42" width="892" height="436" rx="8" fill="#151515"/>
+  <rect x="44" y="42" width="892" height="42" rx="8" fill="#252525"/>
+  <circle cx="70" cy="63" r="6" fill="#ff665c"/>
+  <circle cx="92" cy="63" r="6" fill="#ffcc66"/>
+  <circle cx="114" cy="63" r="6" fill="#7bd88f"/>
+  <text x="492" y="68" text-anchor="middle" fill="#d8d8d8" font-family="Arial, sans-serif" font-size="14">doneproof check</text>
+
+  <text x="76" y="124" fill="#f8f8f2" font-family="Menlo, Consolas, monospace" font-size="18">$ doneproof check --receipt examples/receipts/failing.json</text>
+  <text x="76" y="164" fill="#ff7b72" font-family="Menlo, Consolas, monospace" font-size="24" font-weight="700">DoneProof: FAIL</text>
+  <text x="76" y="204" fill="#ffb4ab" font-family="Menlo, Consolas, monospace" font-size="17">error: Forbidden status: done</text>
+  <text x="76" y="234" fill="#ffb4ab" font-family="Menlo, Consolas, monospace" font-size="17">error: changed_files needs at least 1 item(s)</text>
+  <text x="76" y="264" fill="#ffb4ab" font-family="Menlo, Consolas, monospace" font-size="17">error: commands needs at least 1 item(s)</text>
+  <text x="76" y="294" fill="#ffb4ab" font-family="Menlo, Consolas, monospace" font-size="17">error: evidence needs at least 1 item(s)</text>
+
+  <line x1="76" y1="332" x2="904" y2="332" stroke="#3a3a3a"/>
+
+  <text x="76" y="374" fill="#f8f8f2" font-family="Menlo, Consolas, monospace" font-size="18">$ doneproof check --receipt examples/receipts/passing.json</text>
+  <text x="76" y="414" fill="#7bd88f" font-family="Menlo, Consolas, monospace" font-size="24" font-weight="700">DoneProof: PASS</text>
+  <text x="76" y="448" fill="#d8d8d8" font-family="Menlo, Consolas, monospace" font-size="17">No proof, no done.</text>
+</svg>

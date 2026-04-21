@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=82.0.1", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "doneproof"
+version = "0.4.0"
+description = "Verification receipts for AI agent work. No proof, no done."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+  { name = "DoneProof contributors" }
+]
+keywords = ["ai-agents", "agentops", "verification", "receipts", "cli"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Quality Assurance",
+  "Topic :: Software Development :: Version Control :: Git"
+]
+dependencies = [
+  "PyYAML>=6.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/giugiu-a11y/doneproof"
+Repository = "https://github.com/giugiu-a11y/doneproof"
+Issues = "https://github.com/giugiu-a11y/doneproof/issues"
+
+[project.optional-dependencies]
+dev = [
+  "build>=1.2",
+  "pytest>=9.0.3",
+  "ruff>=0.15"
+]
+
+[project.scripts]
+doneproof = "doneproof.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+doneproof = ["templates/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["UP006", "UP007"]

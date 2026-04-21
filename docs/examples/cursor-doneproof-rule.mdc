@@ -1,0 +1,12 @@
+---
+description: Require DoneProof receipts before agent handoff
+alwaysApply: false
+---
+
+Before handing work back:
+
+1. Create or update `.doneproof/receipts/latest.json`.
+2. Run `doneproof check --receipt .doneproof/receipts/latest.json`.
+3. Run `doneproof report --receipt .doneproof/receipts/latest.json`.
+4. Use `awaiting_review`, `blocked`, or `failed`.
+5. Do not claim approval. The receipt makes review easier; it does not replace review.
