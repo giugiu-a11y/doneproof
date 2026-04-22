@@ -145,6 +145,64 @@ def test_cli_badge_json_reports_invalid_receipt(capsys: pytest.CaptureFixture[st
     assert payload["errors"] > 0
 
 
+def test_cli_comment_outputs_expected_shape(tmp_path: Path) -> None:
+    badge = (
+        "![DoneProof: awaiting_review | no risks listed]"
+        "(https://img.shields.io/badge/DoneProof-awaiting_review%20%7C%20no%20risks%20listed-brightgreen)"
+    )
+    report = {
+        "schema_version": "1.0",
+        "ok": True,
+    }
+    tmp_path.joinpath("doneproof-badge.md").write_text(f"{badge}\n", encoding="utf-8")
+    tmp_path.joinpath("doneproof-report.json").write_text(
+        json.dumps(report, indent=2),
+        encoding="utf-8",
+    )
+
+    code = main(
+        [
+            "comment",
+            "--root",
+            str(tmp_path),
+            "--badge-file",
+            "doneproof-badge.md",
+            "--report-file",
+            "doneproof-report.json",
+            "--output",
+            "doneproof-comment.md",
+        ]
+    )
+
+    assert code == 0
+    output = tmp_path.joinpath("doneproof-comment.md").read_text(encoding="utf-8")
+    expected = ROOT.joinpath("docs", "examples", "github-pr-comment.expected.md").read_text(
+        encoding="utf-8"
+    )
+    assert output == expected
+
+
+def test_cli_comment_falls_back_when_artifacts_are_missing(tmp_path: Path) -> None:
+    code = main(
+        [
+            "comment",
+            "--root",
+            str(tmp_path),
+            "--badge-file",
+            "missing-badge.md",
+            "--report-file",
+            "missing-report.json",
+            "--output",
+            "doneproof-comment.md",
+        ]
+    )
+
+    assert code == 0
+    output = tmp_path.joinpath("doneproof-comment.md").read_text(encoding="utf-8")
+    assert "report_unavailable" in output
+    assert "Missing report file: missing-report.json" in output
+
+
 def test_cli_init_creates_files(tmp_path: Path) -> None:
     code = main(["init", "--root", str(tmp_path)])
 

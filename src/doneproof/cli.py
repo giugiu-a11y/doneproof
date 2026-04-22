@@ -84,6 +84,36 @@ def main(argv: list[str] | None = None) -> int:
         help="Badge output format. Defaults to text.",
     )
 
+    comment_parser = subcommands.add_parser(
+        "comment",
+        help="Render a stable PR comment from badge/report artifacts.",
+    )
+    comment_parser.add_argument(
+        "--root",
+        default=".",
+        help="Repository root. Defaults to current directory.",
+    )
+    comment_parser.add_argument(
+        "--badge-file",
+        default="doneproof-badge.md",
+        help="Path to badge markdown output.",
+    )
+    comment_parser.add_argument(
+        "--report-file",
+        default="doneproof-report.json",
+        help="Path to report JSON output.",
+    )
+    comment_parser.add_argument(
+        "--output",
+        default="-",
+        help="Write to file path or '-' for stdout. Defaults to '-'.",
+    )
+    comment_parser.add_argument(
+        "--marker",
+        default="<!-- doneproof-receipt-comment -->",
+        help="Hidden marker used to upsert one bot comment.",
+    )
+
     new_parser = subcommands.add_parser("new", help="Create a receipt draft.")
     new_parser.add_argument(
         "--root",
@@ -163,6 +193,8 @@ def main(argv: list[str] | None = None) -> int:
         return _report(args)
     if args.command == "badge":
         return _badge(args)
+    if args.command == "comment":
+        return _comment(args)
     if args.command == "new":
         return _new(args)
     if args.command == "doctor":
@@ -295,6 +327,37 @@ def _new(args: argparse.Namespace) -> int:
     return 0
 
 
+def _comment(args: argparse.Namespace) -> int:
+    root = Path(args.root).expanduser().resolve()
+    badge_path = _resolve_receipt_path(root, args.badge_file)
+    report_path = _resolve_receipt_path(root, args.report_file)
+    output_path = args.output
+
+    badge_markdown = _read_badge_markdown(badge_path)
+    report_json = _read_report_json_text(report_path)
+    comment = _render_pr_comment(
+        marker=args.marker,
+        badge_markdown=badge_markdown,
+        report_json=report_json,
+    )
+
+    if output_path == "-":
+        print(comment, end="")
+        return 0
+
+    destination = _resolve_receipt_path(root, output_path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(comment, encoding="utf-8")
+    if destination.is_relative_to(root):
+        display_path = destination.relative_to(root)
+    else:
+        display_path = destination
+    print(
+        f"created: {display_path}"
+    )
+    return 0
+
+
 def _doctor(args: argparse.Namespace) -> int:
     root = Path(args.root).expanduser().resolve()
     result = run_doctor(root)
@@ -417,6 +480,77 @@ def _badge_color(status: str, ok: bool, risk_count: int) -> str:
     if risk_count:
         return "yellow"
     return "brightgreen"
+
+
+def _read_badge_markdown(path: Path) -> str:
+    if not path.exists():
+        return (
+            "![DoneProof: report unavailable]"
+            "(https://img.shields.io/badge/DoneProof-report_unavailable-lightgrey)"
+        )
+    badge = path.read_text(encoding="utf-8", errors="ignore").strip()
+    if badge:
+        return badge
+    return (
+        "![DoneProof: report unavailable]"
+        "(https://img.shields.io/badge/DoneProof-report_unavailable-lightgrey)"
+    )
+
+
+def _read_report_json_text(path: Path) -> str:
+    if not path.exists():
+        return json.dumps(
+            {
+                "schema_version": "1.0",
+                "ok": False,
+                "errors": [f"Missing report file: {path.name}"],
+                "warnings": [],
+            },
+            indent=2,
+        )
+    raw = path.read_text(encoding="utf-8", errors="ignore").strip()
+    if not raw:
+        return json.dumps(
+            {
+                "schema_version": "1.0",
+                "ok": False,
+                "errors": [f"Report file is empty: {path.name}"],
+                "warnings": [],
+            },
+            indent=2,
+        )
+    try:
+        parsed = json.loads(raw)
+    except json.JSONDecodeError:
+        return json.dumps(
+            {
+                "schema_version": "1.0",
+                "ok": False,
+                "errors": [f"Invalid report JSON: {path.name}"],
+                "warnings": [],
+            },
+            indent=2,
+        )
+    return json.dumps(parsed, indent=2)
+
+
+def _render_pr_comment(marker: str, badge_markdown: str, report_json: str) -> str:
+    lines = [
+        marker.strip() or "<!-- doneproof-receipt-comment -->",
+        "## DoneProof receipt",
+        "",
+        badge_markdown.strip(),
+        "",
+        "<details><summary>Report JSON</summary>",
+        "",
+        "```json",
+        report_json.strip(),
+        "```",
+        "",
+        "</details>",
+        "",
+    ]
+    return "\n".join(lines)
 
 
 def _display_path(path: Path, root: Path) -> str:

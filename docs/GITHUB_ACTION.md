@@ -48,6 +48,12 @@ doneproof report --format json
 doneproof badge --format json
 ```
 
+To render a stable PR comment body from the badge/report artifacts:
+
+```bash
+doneproof comment --badge-file doneproof-badge.md --report-file doneproof-report.json --output doneproof-comment.md
+```
+
 ## PR Comment Example
 
 Copy this workflow when reviewers need the receipt summary directly on the pull request:
@@ -57,3 +63,8 @@ docs/examples/github-pr-comment.yml
 ```
 
 The workflow uses only GitHub Actions primitives and the default workflow token. It updates one bot comment per PR and still fails the job when the receipt is invalid.
+Expected rendered shape lives in:
+
+```text
+docs/examples/github-pr-comment.expected.md
+```

@@ -5,7 +5,8 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
+  issues: write
+  pull-requests: read
 
 jobs:
   receipt-comment:
@@ -28,19 +29,10 @@ jobs:
           doneproof report --receipt .doneproof/receipts/latest.json --format json > doneproof-report.json
           status=$?
           doneproof badge --receipt .doneproof/receipts/latest.json --format markdown > doneproof-badge.md || true
-          {
-            echo "## DoneProof receipt"
-            echo
-            cat doneproof-badge.md
-            echo
-            echo "<details><summary>Report JSON</summary>"
-            echo
-            echo '```json'
-            cat doneproof-report.json
-            echo '```'
-            echo
-            echo "</details>"
-          } > doneproof-comment.md
+          doneproof comment \
+            --badge-file doneproof-badge.md \
+            --report-file doneproof-report.json \
+            --output doneproof-comment.md
           echo "status=$status" >> "$GITHUB_OUTPUT"
 
       - name: Upsert PR comment
@@ -49,7 +41,10 @@ jobs:
           script: |
             const fs = require("fs");
             const marker = "<!-- doneproof-receipt-comment -->";
-            const body = `${marker}\n${fs.readFileSync("doneproof-comment.md", "utf8")}`;
+            const body = fs.readFileSync("doneproof-comment.md", "utf8");
+            if (!body.includes(marker)) {
+              throw new Error("DoneProof marker not found in generated comment.");
+            }
             const { owner, repo } = context.repo;
             const issue_number = context.payload.pull_request.number;
             const comments = await github.paginate(github.rest.issues.listComments, {

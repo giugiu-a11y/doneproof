@@ -138,6 +138,7 @@ doneproof evidence git-diff --mode staged
 doneproof report             # print a human-readable receipt
 doneproof report --format json
 doneproof badge              # print a compact receipt badge
+doneproof comment            # render a stable PR comment body from badge/report files
 doneproof doctor             # check local setup
 ```
 
