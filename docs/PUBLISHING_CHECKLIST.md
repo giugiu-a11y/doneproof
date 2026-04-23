@@ -20,6 +20,7 @@ Status: public repo open; latest release gate documented below; social launch no
 - [x] Confirm `uv.lock` is current.
 - [x] Confirm `action.yml` works against a fixture before release.
 - [x] Confirm `.github/workflows/action-smoke.yml` passes on GitHub Actions.
+- [x] Confirm `.github/workflows/security.yml` passes on GitHub Actions.
 - [x] Confirm LICENSE, SECURITY, CONTRIBUTING, and CODE_OF_CONDUCT exist.
 - [x] Create release notes.
 - [x] Review `docs/LAUNCH_COPY.md` manually.
