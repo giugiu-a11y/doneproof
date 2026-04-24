@@ -2,7 +2,13 @@
 
 ## Unreleased
 
-No unreleased changes.
+### Added
+
+- PyPI readiness decision path with explicit Go/No-Go criteria, rollback steps, and verification gate in `docs/PYPI_READINESS.md`.
+
+### Changed
+
+- Publishing checklist now links PyPI readiness checks to issue #2 without publishing by default.
 
 ## v0.4.0
 
