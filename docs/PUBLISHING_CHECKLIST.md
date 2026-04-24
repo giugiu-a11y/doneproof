@@ -36,3 +36,13 @@ Status: public repo open; latest release gate documented below; social launch no
 - package publishing
 - additional public launch posts
 - adding telemetry
+
+## PyPI Readiness Gate (Issue #2)
+
+Run this section only when public install feedback indicates packaging friction.
+
+- [ ] Read `docs/PYPI_READINESS.md`.
+- [ ] Confirm the Go / No-Go rule is satisfied using public evidence links.
+- [ ] Confirm rollback owner and rollback command path before upload.
+- [ ] Verify release notes include rollback guidance for the candidate version.
+- [ ] Keep GitHub install as default path until the first PyPI publish is verified.
