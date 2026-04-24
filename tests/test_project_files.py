@@ -102,6 +102,7 @@ def test_release_readiness_docs_exist() -> None:
         ROOT / "docs" / "LAUNCH_COPY.md",
         ROOT / "docs" / "PRE_GITHUB_AUDIT.md",
         ROOT / "docs" / "PUBLISHING_CHECKLIST.md",
+        ROOT / "docs" / "PYPI_READINESS.md",
         ROOT / "docs" / "INTEGRATIONS.md",
         ROOT / "docs" / "EDITOR_TASKS.md",
         ROOT / "docs" / "POLICY_PRESETS.md",
