@@ -37,7 +37,7 @@ Issues = "https://github.com/giugiu-a11y/doneproof/issues"
 [project.optional-dependencies]
 dev = [
   "build>=1.2",
-  "pytest>=9.0.3",
+  "pytest>=9.1.1",
   "ruff>=0.15"
 ]
 
