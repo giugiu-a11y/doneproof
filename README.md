@@ -4,6 +4,7 @@ No proof, no done.
 
 [![CI](https://github.com/giugiu-a11y/doneproof/actions/workflows/ci.yml/badge.svg)](https://github.com/giugiu-a11y/doneproof/actions/workflows/ci.yml)
 [![Action Smoke](https://github.com/giugiu-a11y/doneproof/actions/workflows/action-smoke.yml/badge.svg)](https://github.com/giugiu-a11y/doneproof/actions/workflows/action-smoke.yml)
+[![Security](https://github.com/giugiu-a11y/doneproof/actions/workflows/security.yml/badge.svg)](https://github.com/giugiu-a11y/doneproof/actions/workflows/security.yml)
 [![Release](https://img.shields.io/github/v/release/giugiu-a11y/doneproof)](https://github.com/giugiu-a11y/doneproof/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 

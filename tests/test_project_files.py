@@ -57,6 +57,17 @@ def test_supply_chain_files_exist() -> None:
     assert json.loads(ROOT.joinpath("renovate.json5").read_text(encoding="utf-8"))["extends"]
 
 
+def test_security_workflow_is_history_complete_and_supply_chain_pinned() -> None:
+    workflow = ROOT.joinpath(".github", "workflows", "security.yml").read_text(encoding="utf-8")
+
+    assert "actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10" in workflow
+    assert 'GITLEAKS_VERSION: "8.30.1"' in workflow
+    assert "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb" in workflow
+    assert "sha256sum --check --strict" in workflow
+    assert "fetch-depth: 0" in workflow
+    assert 'gitleaks-bin git --redact --no-banner --log-opts="--all"' in workflow
+
+
 def test_public_files_do_not_contain_private_markers() -> None:
     def text(*codepoints: int) -> str:
         return "".join(chr(codepoint) for codepoint in codepoints)
