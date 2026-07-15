@@ -4,6 +4,7 @@ No proof, no done.
 
 [![CI](https://github.com/giugiu-a11y/doneproof/actions/workflows/ci.yml/badge.svg)](https://github.com/giugiu-a11y/doneproof/actions/workflows/ci.yml)
 [![Action Smoke](https://github.com/giugiu-a11y/doneproof/actions/workflows/action-smoke.yml/badge.svg)](https://github.com/giugiu-a11y/doneproof/actions/workflows/action-smoke.yml)
+[![Security](https://github.com/giugiu-a11y/doneproof/actions/workflows/security.yml/badge.svg)](https://github.com/giugiu-a11y/doneproof/actions/workflows/security.yml)
 [![Release](https://img.shields.io/github/v/release/giugiu-a11y/doneproof)](https://github.com/giugiu-a11y/doneproof/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -76,6 +77,7 @@ doneproof new \
   --evidence "test:pytest passed" \
   --risk "Manual browser check not performed"
 doneproof check
+doneproof schema-check
 doneproof evidence git-diff
 doneproof evidence git-diff --mode staged
 doneproof report
@@ -107,6 +109,7 @@ Passing receipt:
 
 ```bash
 doneproof check --receipt examples/receipts/passing.json
+doneproof schema-check --receipt examples/receipts/passing.json
 ```
 
 ```text
@@ -117,6 +120,7 @@ Failing receipt:
 
 ```bash
 doneproof check --receipt examples/receipts/failing.json
+doneproof schema-check --receipt examples/receipts/failing.json
 ```
 
 ```text
@@ -133,6 +137,7 @@ error: evidence needs at least 1 item(s)
 doneproof init               # create policy and agent templates
 doneproof new                # create a receipt draft
 doneproof check              # validate a receipt
+doneproof schema-check       # validate receipt JSON shape against schema
 doneproof evidence git-diff  # write a sanitized git diff summary
 doneproof evidence git-diff --mode staged
 doneproof report             # print a human-readable receipt
@@ -141,7 +146,7 @@ doneproof badge              # print a compact receipt badge
 doneproof doctor             # check local setup
 ```
 
-`check` and `report` default to:
+`check`, `schema-check`, and `report` default to:
 
 ```text
 .doneproof/receipts/latest.json

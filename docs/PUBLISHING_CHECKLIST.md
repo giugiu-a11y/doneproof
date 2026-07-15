@@ -10,6 +10,7 @@ Status: public repo open; latest release gate documented below; social launch no
 - [x] Run `make prepublish`.
 - [x] Run `doneproof doctor`.
 - [x] Run `doneproof check`.
+- [x] Run `doneproof schema-check`.
 - [x] Search for private paths and secrets.
 - [x] Confirm `ACTIVE_VERSION.json`, `PROJECT_STATUS.md`, and local `AGENTS.md` are not committed.
 - [x] Review README quickstart against real command output.
@@ -20,6 +21,7 @@ Status: public repo open; latest release gate documented below; social launch no
 - [x] Confirm `uv.lock` is current.
 - [x] Confirm `action.yml` works against a fixture before release.
 - [x] Confirm `.github/workflows/action-smoke.yml` passes on GitHub Actions.
+- [ ] Confirm `.github/workflows/security.yml` passes on the current release candidate.
 - [x] Confirm LICENSE, SECURITY, CONTRIBUTING, and CODE_OF_CONDUCT exist.
 - [x] Create release notes.
 - [x] Review `docs/LAUNCH_COPY.md` manually.
@@ -36,3 +38,13 @@ Status: public repo open; latest release gate documented below; social launch no
 - package publishing
 - additional public launch posts
 - adding telemetry
+
+## PyPI Readiness Gate (Issue #2)
+
+Run this section only when public install feedback indicates packaging friction.
+
+- [ ] Read `docs/PYPI_READINESS.md`.
+- [ ] Confirm the Go / No-Go rule is satisfied using public evidence links.
+- [ ] Confirm rollback owner and rollback command path before upload.
+- [ ] Verify release notes include rollback guidance for the candidate version.
+- [ ] Keep GitHub install as default path until the first PyPI publish is verified.

@@ -45,8 +45,13 @@ printf '# Smoke\n' > /tmp/doneproof-smoke/README.md
 "${UV_RUN[@]}" doneproof check --root /tmp/doneproof-smoke
 
 "${UV_RUN[@]}" doneproof check --root . --receipt examples/receipts/passing.json
+"${UV_RUN[@]}" doneproof schema-check --root . --receipt examples/receipts/passing.json
 if "${UV_RUN[@]}" doneproof check --root . --receipt examples/receipts/failing.json >/tmp/doneproof-failing-check.log 2>&1; then
   echo "Expected failing fixture to fail" >&2
+  exit 1
+fi
+if "${UV_RUN[@]}" doneproof schema-check --root . --receipt examples/receipts/failing.json >/tmp/doneproof-failing-schema-check.log 2>&1; then
+  echo "Expected failing fixture to fail schema check" >&2
   exit 1
 fi
 if [[ -f .doneproof/receipts/latest.json ]]; then
@@ -71,6 +76,16 @@ fi
 /tmp/doneproof-wheel-venv/bin/doneproof init --root /tmp/doneproof-installed-smoke
 git -C /tmp/doneproof-installed-smoke init -b main >/dev/null
 printf '# Installed Smoke\n' > /tmp/doneproof-installed-smoke/README.md
+/tmp/doneproof-wheel-venv/bin/doneproof new \
+  --root /tmp/doneproof-installed-smoke \
+  --task "Installed wheel smoke" \
+  --changed-file README.md \
+  --command "passed:echo ok" \
+  --evidence "smoke:echo ok" \
+  --risk "Example only"
+/tmp/doneproof-wheel-venv/bin/doneproof schema-check \
+  --root /tmp/doneproof-installed-smoke \
+  --json >/tmp/doneproof-installed-schema-check.json
 /tmp/doneproof-wheel-venv/bin/doneproof doctor --root /tmp/doneproof-installed-smoke
 
 "$RM_BIN" -rf build src/doneproof.egg-info .pytest_cache .ruff_cache

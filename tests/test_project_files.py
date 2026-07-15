@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import yaml
+from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -13,8 +14,19 @@ def test_json_schema_loads() -> None:
 
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
 
+    Draft202012Validator.check_schema(schema)
     assert schema["title"] == "DoneProof Receipt"
+    assert schema["$id"] == "urn:doneproof:schema:receipt:1.0"
     assert "task" in schema["required"]
+
+
+def test_packaged_schema_matches_public_schema() -> None:
+    public_schema = (ROOT / "schemas" / "receipt.schema.json").read_text(encoding="utf-8")
+    packaged_schema = (
+        ROOT / "src" / "doneproof" / "schemas" / "receipt.schema.json"
+    ).read_text(encoding="utf-8")
+
+    assert packaged_schema == public_schema
 
 
 def test_github_yaml_files_parse() -> None:
@@ -46,6 +58,17 @@ def test_supply_chain_files_exist() -> None:
     assert (ROOT / "uv.lock").exists()
     assert (ROOT / "renovate.json5").exists()
     assert json.loads(ROOT.joinpath("renovate.json5").read_text(encoding="utf-8"))["extends"]
+
+
+def test_security_workflow_is_history_complete_and_supply_chain_pinned() -> None:
+    workflow = ROOT.joinpath(".github", "workflows", "security.yml").read_text(encoding="utf-8")
+
+    assert "actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10" in workflow
+    assert 'GITLEAKS_VERSION: "8.30.1"' in workflow
+    assert "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb" in workflow
+    assert "sha256sum --check --strict" in workflow
+    assert "fetch-depth: 0" in workflow
+    assert 'gitleaks-bin git --redact --no-banner --log-opts="--all"' in workflow
 
 
 def test_public_files_do_not_contain_private_markers() -> None:
@@ -102,6 +125,7 @@ def test_release_readiness_docs_exist() -> None:
         ROOT / "docs" / "LAUNCH_COPY.md",
         ROOT / "docs" / "PRE_GITHUB_AUDIT.md",
         ROOT / "docs" / "PUBLISHING_CHECKLIST.md",
+        ROOT / "docs" / "PYPI_READINESS.md",
         ROOT / "docs" / "INTEGRATIONS.md",
         ROOT / "docs" / "EDITOR_TASKS.md",
         ROOT / "docs" / "POLICY_PRESETS.md",
