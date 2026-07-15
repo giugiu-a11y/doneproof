@@ -46,7 +46,7 @@ Run on a clean checkout of the exact release commit:
 3. Run repository gates:
    - `make check`
    - `make prepublish`
-4. Run secret scan (`gitleaks detect --no-git --source . --redact --no-banner`).
+4. Run the pinned full-history secret scan defined in `.github/workflows/security.yml`.
 5. Verify release notes and rollback note are included before publish.
 
 ## Explicit Non-Goals

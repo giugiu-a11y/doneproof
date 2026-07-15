@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import yaml
+from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -13,7 +14,9 @@ def test_json_schema_loads() -> None:
 
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
 
+    Draft202012Validator.check_schema(schema)
     assert schema["title"] == "DoneProof Receipt"
+    assert schema["$id"] == "urn:doneproof:schema:receipt:1.0"
     assert "task" in schema["required"]
 
 

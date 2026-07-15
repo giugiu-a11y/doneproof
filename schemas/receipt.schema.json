@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://doneproof.dev/schemas/receipt.schema.json",
+  "$id": "urn:doneproof:schema:receipt:1.0",
   "title": "DoneProof Receipt",
   "type": "object",
   "additionalProperties": true,

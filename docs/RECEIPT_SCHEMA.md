@@ -8,6 +8,8 @@ Machine-readable schema:
 schemas/receipt.schema.json
 ```
 
+The bundled schema uses the stable identifier `urn:doneproof:schema:receipt:1.0` and does not depend on a hosted schema endpoint.
+
 Validate a receipt against the schema:
 
 ```bash

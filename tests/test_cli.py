@@ -78,7 +78,7 @@ def test_cli_schema_check_fails_and_returns_json(
     payload = json.loads(capsys.readouterr().out)
     assert payload["ok"] is False
     assert payload["receipt"] == "examples/receipts/failing.json"
-    assert payload["schema"].endswith("schemas/receipt.schema.json")
+    assert payload["schema"] == "bundled:receipt.schema.json"
     assert any("status" in message for message in payload["errors"])
 
 

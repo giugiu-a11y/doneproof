@@ -369,7 +369,11 @@ def _schema_check(args: argparse.Namespace) -> int:
                 {
                     "ok": result.ok,
                     "receipt": _display_path(receipt_path, root),
-                    "schema": _display_path(result.schema_path, root),
+                    "schema": (
+                        _display_path(result.schema_path, root)
+                        if schema_path is not None
+                        else "bundled:receipt.schema.json"
+                    ),
                     "errors": result.errors,
                 },
                 indent=2,

@@ -76,6 +76,16 @@ fi
 /tmp/doneproof-wheel-venv/bin/doneproof init --root /tmp/doneproof-installed-smoke
 git -C /tmp/doneproof-installed-smoke init -b main >/dev/null
 printf '# Installed Smoke\n' > /tmp/doneproof-installed-smoke/README.md
+/tmp/doneproof-wheel-venv/bin/doneproof new \
+  --root /tmp/doneproof-installed-smoke \
+  --task "Installed wheel smoke" \
+  --changed-file README.md \
+  --command "passed:echo ok" \
+  --evidence "smoke:echo ok" \
+  --risk "Example only"
+/tmp/doneproof-wheel-venv/bin/doneproof schema-check \
+  --root /tmp/doneproof-installed-smoke \
+  --json >/tmp/doneproof-installed-schema-check.json
 /tmp/doneproof-wheel-venv/bin/doneproof doctor --root /tmp/doneproof-installed-smoke
 
 "$RM_BIN" -rf build src/doneproof.egg-info .pytest_cache .ruff_cache

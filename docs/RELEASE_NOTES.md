@@ -4,10 +4,13 @@
 
 ### Added
 
+- `doneproof schema-check` with a bundled Draft 2020-12 receipt schema and machine-readable output.
+- Full-history secret scanning with a checksum-verified Gitleaks binary and a commit-pinned checkout action.
 - PyPI readiness decision path with explicit Go/No-Go criteria, rollback steps, and verification gate in `docs/PYPI_READINESS.md`.
 
 ### Changed
 
+- Default schema output now uses a stable logical label instead of exposing an installation path.
 - Publishing checklist now links PyPI readiness checks to issue #2 without publishing by default.
 
 ## v0.4.0
