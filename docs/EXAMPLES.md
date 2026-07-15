@@ -118,8 +118,8 @@ jobs:
   receipt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: giugiu-a11y/doneproof@v0.5.0
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: giugiu-a11y/doneproof@89f2b9da284b770feeda94a75261ac42e145cdc9 # v0.5.0
         with:
           receipt: .doneproof/receipts/latest.json
 ```
