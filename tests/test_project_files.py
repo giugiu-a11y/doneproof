@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import yaml
@@ -68,12 +69,29 @@ def test_supply_chain_files_exist() -> None:
 def test_security_workflow_is_history_complete_and_supply_chain_pinned() -> None:
     workflow = ROOT.joinpath(".github", "workflows", "security.yml").read_text(encoding="utf-8")
 
-    assert "actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10" in workflow
+    assert "actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0" in workflow
     assert 'GITLEAKS_VERSION: "8.30.1"' in workflow
     assert "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb" in workflow
     assert "sha256sum --check --strict" in workflow
     assert "fetch-depth: 0" in workflow
     assert 'gitleaks-bin git --redact --no-banner --log-opts="--all"' in workflow
+
+
+def test_external_actions_are_pinned_in_workflows_and_copyable_example() -> None:
+    yaml_paths = sorted(ROOT.joinpath(".github", "workflows").glob("*.yml"))
+    yaml_paths.append(ROOT / "docs" / "examples" / "github-pr-comment.yml")
+    external_uses: list[tuple[Path, str]] = []
+    for path in yaml_paths:
+        content = path.read_text(encoding="utf-8")
+        for action in re.findall(r"^\s*-?\s*uses:\s*([^\s#]+)", content, flags=re.MULTILINE):
+            if not action.startswith("./"):
+                external_uses.append((path, action))
+
+    assert external_uses
+    for path, action in external_uses:
+        assert "@" in action, (path, action)
+        reference = action.rsplit("@", 1)[1]
+        assert re.fullmatch(r"[0-9a-f]{40}", reference), (path, action)
 
 
 def test_public_files_do_not_contain_private_markers() -> None:

@@ -1,5 +1,10 @@
 # Release Notes
 
+## Unreleased
+
+- Pinned every external GitHub Action used by CI, security, smoke tests, and the copyable PR-comment example to a verified full commit SHA.
+- Upgraded Checkout to v7 and added a regression test that rejects mutable Action references.
+
 ## v0.5.0
 
 Released 2026-07-14.
