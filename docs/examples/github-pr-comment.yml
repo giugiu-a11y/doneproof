@@ -18,7 +18,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install DoneProof
-        run: python -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@v0.4.0"
+        run: python -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@v0.5.0"
 
       - name: Build receipt comment
         id: doneproof

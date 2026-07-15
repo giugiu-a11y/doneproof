@@ -63,7 +63,7 @@ Install from GitHub:
 
 ```bash
 python3 -m pip install --upgrade pip
-python3 -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@v0.4.0"
+python3 -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@v0.5.0"
 ```
 
 Use it inside a repository:
@@ -242,7 +242,7 @@ docs/integrations/
 DoneProof includes a composite GitHub Action.
 
 ```yaml
-- uses: giugiu-a11y/doneproof@v0.4.0
+- uses: giugiu-a11y/doneproof@v0.5.0
   with:
     receipt: .doneproof/receipts/latest.json
 ```
@@ -281,7 +281,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: giugiu-a11y/doneproof@v0.4.0
+      - uses: giugiu-a11y/doneproof@v0.5.0
         with:
           receipt: .doneproof/receipts/latest.json
 ```
@@ -331,6 +331,6 @@ It is not a replacement for tests, CI, code review, product QA, or human approva
 
 ## Release Status
 
-Current public release: `v0.4.0`.
+Current public release: `v0.5.0`.
 
 The `main` branch is checked by CI and by an Action Smoke workflow that runs the composite action against the passing receipt fixture.

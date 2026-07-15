@@ -1,6 +1,6 @@
 # Launch Plan
 
-Status: ready for manual social posting.
+Status: ready after the `v0.5.0` tag and clean-install smoke pass.
 
 ## Goal
 
@@ -9,7 +9,7 @@ Make DoneProof easy to understand in one minute and easy to try in five minutes.
 ## Current Public State
 
 - Public repo: https://github.com/giugiu-a11y/doneproof
-- Current release: `v0.4.0`
+- Current release: `v0.5.0`
 - GitHub install path works from the public tag.
 - CI and Action Smoke are required on `main`.
 - Secret scanning and push protection are enabled.
@@ -51,15 +51,13 @@ Make DoneProof easy to understand in one minute and easy to try in five minutes.
 
 ## Success Signals
 
-- 10+ stars from people outside the immediate circle;
-- one real issue or feature request from an external user;
-- one external repo trying the GitHub Action;
-- one clear request that shapes `v0.5.0`.
+- one confirmed external user completes the clean-install path;
+- one real issue or feature request comes from an external workflow;
+- one external repository tries the GitHub Action;
+- one clear request shapes the next release.
 
-## Next Public Repo Candidate
+Stars, views and clones are useful telemetry, but they do not count as confirmed adoption.
 
-Start the second piece only after external signal. The strongest candidate is a project guard extracted from the same operating lesson:
+## New Repository Gate
 
-> Agents should prove they are editing the right project before they edit files.
-
-Do not create that repo until the scope is smaller than the idea.
+Do not create another public product repo until DoneProof has at least three confirmed external users, one qualified integration, one accepted upstream contribution, and two consecutive weekly cycles with product, demo, note, distribution, upstream and review evidence.
