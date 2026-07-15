@@ -17,7 +17,7 @@ Status: public repo open; latest release gate documented below; social launch no
 - [x] Confirm examples are anonymous.
 - [x] Confirm issue templates do not ask users to paste secrets.
 - [x] Confirm `.github/CODEOWNERS` points to the approved owner.
-- [x] Confirm `renovate.json5` is appropriate for the public repo.
+- [x] Confirm `.github/dependabot.yml` covers both `uv` and GitHub Actions with grouped, bounded updates.
 - [x] Confirm `uv.lock` is current.
 - [x] Confirm `action.yml` works against a fixture before release.
 - [x] Confirm `.github/workflows/action-smoke.yml` passes on GitHub Actions.

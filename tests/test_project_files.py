@@ -32,6 +32,7 @@ def test_packaged_schema_matches_public_schema() -> None:
 def test_github_yaml_files_parse() -> None:
     yaml_paths = [
         ROOT / "action.yml",
+        ROOT / ".github" / "dependabot.yml",
         ROOT / "docs" / "examples" / "github-pr-comment.yml",
         ROOT / ".github" / "ISSUE_TEMPLATE" / "config.yml",
     ]
@@ -56,8 +57,12 @@ def test_editor_task_examples_load() -> None:
 
 def test_supply_chain_files_exist() -> None:
     assert (ROOT / "uv.lock").exists()
-    assert (ROOT / "renovate.json5").exists()
-    assert json.loads(ROOT.joinpath("renovate.json5").read_text(encoding="utf-8"))["extends"]
+    config_path = ROOT / ".github" / "dependabot.yml"
+    assert config_path.exists()
+
+    config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    ecosystems = {update["package-ecosystem"] for update in config["updates"]}
+    assert ecosystems == {"github-actions", "uv"}
 
 
 def test_security_workflow_is_history_complete_and_supply_chain_pinned() -> None:
