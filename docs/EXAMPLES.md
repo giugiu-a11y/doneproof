@@ -119,7 +119,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: giugiu-a11y/doneproof@v0.4.0
+      - uses: giugiu-a11y/doneproof@v0.5.0
         with:
           receipt: .doneproof/receipts/latest.json
 ```

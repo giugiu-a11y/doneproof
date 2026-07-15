@@ -178,7 +178,7 @@ GitHub install is intentional for the first public pass. I want feedback on the 
 
 - Confirm the repo is public.
 - Confirm badges are green.
-- Confirm `v0.4.0` is visible.
+- Confirm `v0.5.0` is visible.
 - Run the GitHub install command once.
 - Open the README in a logged-out or private browser window.
 - Post one short version first.

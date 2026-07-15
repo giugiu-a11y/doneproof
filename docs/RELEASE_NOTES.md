@@ -1,6 +1,8 @@
 # Release Notes
 
-## Unreleased
+## v0.5.0
+
+Released 2026-07-14.
 
 ### Added
 
