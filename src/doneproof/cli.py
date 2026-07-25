@@ -10,6 +10,7 @@ from typing import Any
 from urllib.parse import quote
 
 from . import __version__
+from .capture import build_captured_receipt, run_command, validate_requested_file
 from .doctor import run_doctor
 from .git import changed_files, git_diff_summary
 from .policy import init_project, load_policy
@@ -115,6 +116,42 @@ def main(argv: list[str] | None = None) -> int:
     )
     new_parser.add_argument("--risk", action="append", default=[], help="Known residual risk.")
 
+    capture_parser = subcommands.add_parser(
+        "capture",
+        help="Run a command and write machine-captured proof.",
+    )
+    capture_parser.add_argument(
+        "--root",
+        default=".",
+        help="Repository root. Defaults to current directory.",
+    )
+    capture_parser.add_argument("--task", required=True, help="Task this proof covers.")
+    capture_parser.add_argument("--summary", default="", help="Short summary of the work.")
+    capture_parser.add_argument(
+        "--output",
+        default=DEFAULT_RECEIPT,
+        help=f"Receipt path to write. Defaults to {DEFAULT_RECEIPT}.",
+    )
+    capture_parser.add_argument("--changed-file", action="append", default=[], help="Changed file.")
+    capture_parser.add_argument("--risk", action="append", default=[], help="Known residual risk.")
+    capture_parser.add_argument(
+        "--git-mode",
+        choices=["all", "staged", "unstaged", "untracked"],
+        default="all",
+        help="Git scope included in the proof digest. Defaults to all.",
+    )
+    capture_parser.add_argument(
+        "--timeout",
+        type=float,
+        default=300.0,
+        help="Maximum command runtime in seconds. Defaults to 300.",
+    )
+    capture_parser.add_argument(
+        "captured_command",
+        nargs=argparse.REMAINDER,
+        help="Command argv after --.",
+    )
+
     doctor_parser = subcommands.add_parser("doctor", help="Check DoneProof setup.")
     doctor_parser.add_argument(
         "--root",
@@ -191,6 +228,8 @@ def main(argv: list[str] | None = None) -> int:
         return _badge(args)
     if args.command == "new":
         return _new(args)
+    if args.command == "capture":
+        return _capture(args)
     if args.command == "doctor":
         return _doctor(args)
     if args.command == "schema-check":
@@ -323,6 +362,69 @@ def _new(args: argparse.Namespace) -> int:
     return 0
 
 
+def _capture(args: argparse.Namespace) -> int:
+    root = Path(args.root).expanduser().resolve()
+    output = _resolve_receipt_path(root, args.output)
+    command = list(args.captured_command)
+    if command and command[0] == "--":
+        command = command[1:]
+    if not command:
+        print("ERROR: capture requires a command after --", file=sys.stderr)
+        return 2
+    if args.timeout <= 0:
+        print("ERROR: --timeout must be greater than zero", file=sys.stderr)
+        return 2
+
+    try:
+        # Refuse to execute when a privacy-safe Git-scoped receipt cannot be produced.
+        for requested_file in args.changed_file:
+            validate_requested_file(requested_file)
+        git_diff_summary(root, paths=list(args.changed_file) or None, mode=args.git_mode)
+        run = run_command(
+            command,
+            root=root,
+            timeout_seconds=args.timeout,
+        )
+        receipt = build_captured_receipt(
+            root=root,
+            task=args.task,
+            summary=args.summary,
+            command=command,
+            run=run,
+            requested_files=list(args.changed_file),
+            git_mode=args.git_mode,
+            risks=list(args.risk),
+        )
+    except ValueError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 2
+    except KeyboardInterrupt:
+        print("\nCaptured Proof: INTERRUPTED", file=sys.stderr)
+        return 130
+
+    write_receipt(output, receipt)
+    proof = receipt["captured_proof"]
+    assert isinstance(proof, dict)
+    captured_output = proof["output"]
+    git_scope = proof["git_scope"]
+    assert isinstance(captured_output, dict)
+    assert isinstance(git_scope, dict)
+    state = "PASS" if run.exit_code == 0 else "FAIL"
+    display_output = output.relative_to(root) if output.is_relative_to(root) else output
+    print("")
+    print(f"Captured Proof: {state}")
+    print(f"exit: {run.exit_code} | duration: {run.duration_ms} ms")
+    print(
+        f"output: {run.output_sha256} "
+        f"(content not stored; redactions: {run.redactions})"
+    )
+    print(f"git scope: {git_scope['sha256']} ({len(receipt['changed_files'])} files)")
+    print(f"integrity: {proof['integrity_sha256']}")
+    print(f"receipt: {display_output}")
+    print(f"review state: {receipt['status']}")
+    return run.exit_code
+
+
 def _doctor(args: argparse.Namespace) -> int:
     root = Path(args.root).expanduser().resolve()
     result = run_doctor(root)
@@ -435,6 +537,7 @@ def _report_payload(
         "commands": receipt.get("commands", []),
         "evidence": receipt.get("evidence", []),
         "risks": receipt.get("risks", []),
+        "captured_proof": receipt.get("captured_proof"),
         "errors": [finding.message for finding in result.errors()],
         "warnings": [finding.message for finding in result.warnings()],
     }

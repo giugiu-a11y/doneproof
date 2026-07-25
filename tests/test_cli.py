@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -30,6 +32,19 @@ def test_cli_version_passes() -> None:
         main(["--version"])
 
     assert exc.value.code == 0
+
+
+def test_python_module_entrypoint_passes() -> None:
+    completed = subprocess.run(
+        [sys.executable, "-m", "doneproof", "--version"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 0
+    assert "doneproof" in completed.stdout.lower()
 
 
 def test_cli_check_fails() -> None:
@@ -277,6 +292,4 @@ def test_cli_evidence_git_diff_rejects_unsafe_path_filter(tmp_path: Path) -> Non
 
 
 def _run(cwd: Path, *command: str) -> None:
-    import subprocess
-
     subprocess.run(command, cwd=cwd, check=True, capture_output=True, text=True)

@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from doneproof.git import git_diff_summary
+from doneproof.git import git_diff_summary, git_scope_digest
 
 
 def test_git_diff_summary_reports_clean_repo(tmp_path: Path) -> None:
@@ -83,6 +83,26 @@ def test_git_diff_summary_rejects_unsafe_path_filter(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="repo-relative and safe"):
         git_diff_summary(tmp_path, paths=["../outside"])
+
+
+def test_git_scope_digest_changes_when_equal_size_patch_content_changes(tmp_path: Path) -> None:
+    _init_repo(tmp_path, files={"README.md": "value=base\n"})
+    tmp_path.joinpath("README.md").write_text("value=one!\n", encoding="utf-8")
+    first = git_scope_digest(tmp_path, paths=["README.md"], mode="unstaged")
+    tmp_path.joinpath("README.md").write_text("value=two!\n", encoding="utf-8")
+    second = git_scope_digest(tmp_path, paths=["README.md"], mode="unstaged")
+
+    assert first.startswith("sha256:")
+    assert second.startswith("sha256:")
+    assert first != second
+
+
+def test_git_scope_digest_rejects_private_path_filter(tmp_path: Path) -> None:
+    _init_repo(tmp_path)
+    tmp_path.joinpath("secrets.txt").write_text("private\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="private evidence paths"):
+        git_scope_digest(tmp_path, paths=["secrets.txt"])
 
 
 def _init_repo(tmp_path: Path, files: dict[str, str] | None = None) -> None:

@@ -1,5 +1,7 @@
 # DoneProof
 
+Run the check through DoneProof and leave machine-captured proof, not a typed claim.
+
 No proof, no done.
 
 [![CI](https://github.com/giugiu-a11y/doneproof/actions/workflows/ci.yml/badge.svg)](https://github.com/giugiu-a11y/doneproof/actions/workflows/ci.yml)
@@ -8,7 +10,8 @@ No proof, no done.
 [![Release](https://img.shields.io/github/v/release/giugiu-a11y/doneproof)](https://github.com/giugiu-a11y/doneproof/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-DoneProof is a local verification layer for AI agent work. It makes agents produce a receipt before they claim work is ready.
+DoneProof is a local verification layer for AI agent work. It makes agents produce
+a receipt before they claim work is ready.
 
 It does not replace review. It makes review harder to fake.
 
@@ -17,6 +20,8 @@ It does not replace review. It makes review harder to fake.
 ## What You Get
 
 - a small CLI for receipts, checks, reports, and git diff evidence;
+- a Captured Proof candidate that runs a real command and binds its exit code,
+  duration, sanitized output digest, and Git scope into the receipt;
 - a composite GitHub Action for pull request gates;
 - integration templates for Codex, Claude Code, Cursor, OpenCode, OpenClaw-style agents, and Hermes-style orchestrators;
 - review language that blocks agents from claiming approval early.
@@ -90,22 +95,68 @@ For local development on DoneProof itself:
 ```bash
 git clone https://github.com/giugiu-a11y/doneproof.git
 cd doneproof
-python3 -m pip install --upgrade pip
-python3 -m pip install -e ".[dev]"
+uv sync --extra dev --frozen
 make prepublish
 ```
 
+## Captured Proof v0.6 Candidate
+
+The current public release is still `v0.5.0`. Captured Proof is an unreleased
+candidate being reviewed on this branch.
+
+Try the complete flow from this checkout:
+
+```bash
+uv run --frozen --extra dev python scripts/captured_proof_demo.py
+```
+
+The script creates an isolated Git repository, changes a real file, runs a real
+check through `doneproof capture`, validates the receipt, and validates its JSON
+schema. The recorded run used by the demo completed the full flow in `0.42`
+seconds on the development machine; that is evidence for this run, not a
+cross-machine performance guarantee.
+
+Use the command in your own changed repository:
+
+```bash
+doneproof capture \
+  --task "Verify the agent change" \
+  --changed-file README.md \
+  -- \
+  python3 verify_agent_change.py
+```
+
+Captured Proof records:
+
+- the real exit code and duration;
+- a SHA-256 digest of sanitized command output, without storing raw output;
+- a SHA-256 digest of the selected Git patch and untracked file bytes, without
+  storing the diff;
+- safe environment metadata and an integrity digest over the proof object.
+
+Known secret patterns and local home paths are masked before output is shown or
+hashed. This reduces accidental leakage; it is not a guarantee that arbitrary
+secrets can never appear.
+
+The integrity digest detects accidental or unsophisticated mutation inside the
+receipt. It is not signed, remotely attested, or trustless. Human review of the
+actual code and diff remains required.
+
+The candidate acceptance criteria, trust boundary, and remaining release gates
+are documented in
+[docs/CAPTURED_PROOF_V0_6_REVIEW.md](docs/CAPTURED_PROOF_V0_6_REVIEW.md).
+
 ## Demo
 
-Animated walkthrough:
+The animated walkthrough is generated from a real Captured Proof execution:
 
 ![DoneProof animated demo](docs/assets/doneproof-demo.gif)
 
-Full command transcript:
+Reproduction steps and the exact trust boundary:
 
 - [docs/DEMO.md](docs/DEMO.md)
 
-Passing receipt:
+The stable `v0.5.0` receipt fixtures remain available:
 
 ```bash
 doneproof check --receipt examples/receipts/passing.json
@@ -136,6 +187,7 @@ error: evidence needs at least 1 item(s)
 ```bash
 doneproof init               # create policy and agent templates
 doneproof new                # create a receipt draft
+doneproof capture            # run a command and write Captured Proof (v0.6 candidate)
 doneproof check              # validate a receipt
 doneproof schema-check       # validate receipt JSON shape against schema
 doneproof evidence git-diff  # write a sanitized git diff summary
@@ -159,6 +211,10 @@ doneproof doctor             # check local setup
 ```
 
 The git diff evidence helper stores file paths plus addition/deletion counts. It does not store full diff content by default. Reviewers should still inspect the actual diff before approval.
+
+Captured Proof goes further: its Git-scope digest is calculated from the actual
+selected patch and untracked file bytes. The receipt still stores only the
+digest and privacy-safe file list.
 
 ## Receipt Format
 
@@ -334,3 +390,7 @@ It is not a replacement for tests, CI, code review, product QA, or human approva
 Current public release: `v0.5.0`.
 
 The `main` branch is checked by CI and by an Action Smoke workflow that runs the composite action against the passing receipt fixture.
+
+Captured Proof `v0.6` is an unreleased candidate. A clean demonstration now
+exists locally; privacy review, qualified external maintainer feedback, and the
+normal release gate still have to close before publication.
