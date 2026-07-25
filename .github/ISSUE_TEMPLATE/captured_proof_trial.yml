@@ -1,0 +1,84 @@
+name: Captured Proof real-change trial
+description: Report whether a Captured Proof receipt improved one real review.
+title: "[Captured Proof trial]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form after running Captured Proof on one real change.
+
+        Keep the report public-safe. Do not include secrets, raw diffs, private output, customer names, private repository details, local home paths, or provider credentials.
+
+  - type: input
+    id: change_type
+    attributes:
+      label: Change type
+      description: Describe the kind of change without exposing private repository details.
+      placeholder: "Example: targeted bug fix in a Python CLI"
+    validations:
+      required: true
+
+  - type: input
+    id: check_run
+    attributes:
+      label: Check run
+      description: Which sanitized verification command did Captured Proof execute?
+      placeholder: "Example: python3 -m pytest tests/test_cli.py -q"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: review_effect
+    attributes:
+      label: Review effect
+      description: What changed when the reviewer inspected the receipt beside the Git change?
+      options:
+        - Reduced review ambiguity
+        - Made no material difference
+        - Added ceremony
+        - Could not complete the trial
+    validations:
+      required: true
+
+  - type: textarea
+    id: review_observation
+    attributes:
+      label: Review observation
+      description: What decision became easier, stayed unclear, or became harder?
+    validations:
+      required: true
+
+  - type: textarea
+    id: missing_evidence
+    attributes:
+      label: Missing evidence or friction
+      description: What evidence, linkage, install step, or workflow fit was missing?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: repeat_intent
+    attributes:
+      label: Would you repeat this without coaching?
+      options:
+        - "Yes"
+        - "No"
+        - "Only after a specific change"
+    validations:
+      required: true
+
+  - type: textarea
+    id: public_safe_artifact
+    attributes:
+      label: Optional public-safe receipt or screenshot
+      description: Share only a reviewed, sanitized artifact or public link. A written observation is enough.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy confirmation
+      options:
+        - label: I reviewed this report and any attachment for secrets and private information.
+          required: true

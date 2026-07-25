@@ -38,6 +38,17 @@ DoneProof automatically selects the current privacy-safe changed files.
 with the repository's real test, lint, build, or verification command when
 evaluating the code itself.
 
+### Close the loop on one real change
+
+Trying the candidate is useful only if it answers the maintainer question:
+did the receipt reduce review ambiguity, make no material difference, or add
+ceremony?
+
+Use the [five-minute validation trial](docs/VALIDATION_TRIAL.md) on one
+public-safe change, then report the review outcome on
+[draft pull request #35](https://github.com/giugiu-a11y/doneproof/pull/35).
+A passing command alone is engineering evidence, not product validation.
+
 ## What You Get
 
 - a small CLI for receipts, checks, reports, and git diff evidence;

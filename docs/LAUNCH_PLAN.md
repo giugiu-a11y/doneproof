@@ -23,7 +23,8 @@ maintainer workflow is proven.
 
 A new user:
 
-1. installs DoneProof from the public release;
+1. installs the candidate during validation, or the public release after
+   approval;
 2. runs one real check with `doneproof capture`;
 3. validates the receipt with `doneproof check` and `doneproof schema-check`;
 4. shares or reviews the receipt against the same Git change;
@@ -38,7 +39,8 @@ The public demonstration must show this loop in less than 60 seconds.
 2. Record concrete pain, objections, and workflow constraints; an invitation
    alone does not count as feedback.
 3. Send at most one follow-up in the documented window.
-4. Help one outside maintainer create a receipt from a real change.
+4. Ask the maintainer to use `docs/VALIDATION_TRIAL.md` on one real change and
+   report the review effect, missing evidence, and repeat intent.
 5. Confirm one repeat use without coaching.
 6. Repeat the privacy and release review on the exact candidate.
 7. Publish `v0.6.0` only after owner approval.

@@ -14,6 +14,7 @@ Status: public repository live; Captured Proof candidate in draft review;
 - [x] Prepare release and channel copy without unsupported claims.
 - [x] Open the candidate as a draft pull request.
 - [x] Invite five maintainers with relevant agent-review workflows.
+- [x] Provide a public-safe real-change trial and structured feedback path.
 
 ## Market Gate
 
