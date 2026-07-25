@@ -51,7 +51,13 @@ Until all four close, the public release remains `v0.5.0`.
 
 ## Candidate Evidence — 2026-07-25
 
-Local candidate verification is complete:
+Candidate implementation commit:
+`8d8549692f7295815e3f1b6a842c05922762021e`
+
+Public review:
+[draft pull request #35](https://github.com/giugiu-a11y/doneproof/pull/35)
+
+Candidate verification is complete:
 
 - all 57 repository tests passed;
 - Ruff, bytecode compilation, and the frozen lockfile check passed;
@@ -61,25 +67,25 @@ Local candidate verification is complete:
   `schema-check`, and JSON `report`;
 - the latest isolated demo completed capture, receipt validation, and schema
   validation in `0.58` seconds (`0.70` seconds wall time);
-- the exact text diff passed Gitleaks 8.30.1 with no leaks;
+- the exact pushed Git range passed Gitleaks 8.30.1 with no leaks;
 - added lines passed the internal-runtime marker scan; the three deliberate
   privacy-fixture lines were reviewed; generated assets passed embedded-string
-  and metadata checks.
-
-These are local candidate results, not proof that remote CI or the public
-release gates have passed.
+  and metadata checks;
+- GitHub completed `action-smoke`, `Secret scan`, and the Python 3.10, 3.11,
+  and 3.12 CI jobs successfully on that exact commit.
 
 ## Gate Status
 
-1. **Local engineering gate: passed.** Remote CI and security workflows remain
-   pending until the candidate branch is pushed.
-2. **Local privacy gate: passed.** It must be repeated against the exact pushed
-   commit before merge or release.
+1. **Engineering gate: passed for the candidate commit.** Local verification
+   and all five required GitHub checks are green on the exact pushed head.
+2. **Privacy gate: passed for the candidate commit.** The exact pushed range,
+   added lines, generated assets, and public copy were checked. This gate must
+   be repeated if the release diff changes.
 3. **Maintainer feedback gate: pending.** An invitation is not a qualified
    conversation; a concrete maintainer response is required.
 4. **Owner gate: partially approved.** Creating the public candidate PR and
    maintainer outreach is approved. Publishing the release or distribution copy
    still requires a separate final review.
 
-The candidate is ready for a public review PR. It is not ready for a `v0.6.0`
-release.
+The candidate is live as a draft public review PR. It is not ready for a
+`v0.6.0` release.
