@@ -134,6 +134,7 @@ def test_capture_redacts_output_and_command_before_hashing_or_persisting(
             sys.executable,
             "redaction_check.py",
             f"--password={secret}",
+            "/home/alice/private-tool",
         ]
     )
 
@@ -229,10 +230,14 @@ def test_capture_redacts_windows_home_path_before_display_or_persistence(
     receipt_text = tmp_path.joinpath(
         ".doneproof", "receipts", "latest.json"
     ).read_text(encoding="utf-8")
+    receipt = json.loads(receipt_text)
+    output = receipt["captured_proof"]["output"]
     assert local_path not in terminal
     assert local_path not in receipt_text
     assert "[LOCAL_PATH]" in terminal
-    assert "[LOCAL_PATH]" in receipt_text
+    assert output["redactions"] >= 1
+    assert output["redaction_status"] == "known_patterns_masked"
+    assert output["sha256"]
 
 
 def test_capture_digest_matches_only_the_public_changed_files(tmp_path: Path) -> None:
