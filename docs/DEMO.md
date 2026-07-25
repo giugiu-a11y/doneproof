@@ -22,8 +22,9 @@ The script:
 6. runs `doneproof check` and `doneproof schema-check`;
 7. fails unless every step succeeds.
 
-On 2026-07-25, the run embedded in the demo completed the entire flow in `0.42`
-seconds on the development machine. Treat that as a receipt for this run, not a
+On 2026-07-25, the latest recorded candidate demo completed capture, receipt
+validation, and schema validation in `0.58` seconds (`0.70` seconds wall time)
+on the development machine. Treat that as a receipt for this run, not a
 universal benchmark.
 
 ## Reproduce It

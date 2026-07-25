@@ -58,6 +58,13 @@ def test_capture_writes_valid_receipt_without_raw_output(
     assert proof["git_scope"]["content_stored"] is False
     assert proof["git_scope"]["sha256"].startswith("sha256:")
     assert proof["integrity_sha256"] == captured_proof_integrity(proof)
+    assert receipt["evidence"][-1] == {
+        "type": "reproduce",
+        "value": (
+            "https://github.com/giugiu-a11y/doneproof/pull/35"
+            "#reproduce-the-public-proof"
+        ),
+    }
     assert validate_receipt(
         receipt,
         load_policy(tmp_path),

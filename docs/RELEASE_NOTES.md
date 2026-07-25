@@ -31,9 +31,10 @@
 
 ### Verified for the release candidate
 
-- The isolated capture, receipt validation, and schema validation flow completed
-  in `0.42` seconds on the development machine; this is a measured run, not a
-  cross-machine performance claim.
+- The latest isolated candidate demo completed capture, receipt validation, and
+  schema validation in `0.58` seconds (`0.70` seconds wall time) on the
+  development machine; this is a measured run, not a cross-machine performance
+  claim.
 
 ### Changed
 

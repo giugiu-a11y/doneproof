@@ -20,7 +20,10 @@ from typing import TextIO
 from .git import changed_files, git_scope_digest, is_public_candidate
 from .receipt import build_receipt, captured_proof_integrity
 
-REPRODUCE_URL = "https://github.com/giugiu-a11y/doneproof#captured-proof"
+REPRODUCE_URL = (
+    "https://github.com/giugiu-a11y/doneproof/pull/35"
+    "#reproduce-the-public-proof"
+)
 _REDACTED = "[REDACTED]"
 _SENSITIVE_KEY = re.compile(
     r"(?:api[_-]?key|private[_-]?key|password|passwd|secret|token)",

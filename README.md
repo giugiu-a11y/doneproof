@@ -1,6 +1,8 @@
 # DoneProof
 
-Run the check through DoneProof and leave machine-captured proof, not a typed claim.
+Local check evidence for AI code changes.
+
+Run the check. Get a shareable receipt tied to the current Git change.
 
 No proof, no done.
 
@@ -10,8 +12,9 @@ No proof, no done.
 [![Release](https://img.shields.io/github/v/release/giugiu-a11y/doneproof)](https://github.com/giugiu-a11y/doneproof/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-DoneProof is a local verification layer for AI agent work. It makes agents produce
-a receipt before they claim work is ready.
+DoneProof turns a local verification command into a reviewable receipt tied to
+the current Git change. It records what ran before an agent claims work is
+ready.
 
 It does not replace review. It makes review harder to fake.
 
@@ -104,7 +107,21 @@ make prepublish
 The current public release is still `v0.5.0`. Captured Proof is an unreleased
 candidate being reviewed on this branch.
 
-Try the complete flow from this checkout:
+Fastest external trial: run these commands inside a Git repository with at least
+one current, privacy-safe change:
+
+```bash
+python3 -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@feature/captured-proof-v0.6"
+doneproof capture --task "Check this change" -- git diff --check
+doneproof check
+```
+
+DoneProof automatically selects the current privacy-safe changed files.
+`git diff --check` is a universal first check for whitespace errors; replace it
+with the repository's real test, lint, build, or verification command when
+evaluating the change itself.
+
+Run the complete isolated demo from a candidate checkout:
 
 ```bash
 uv run --frozen --extra dev python scripts/captured_proof_demo.py
@@ -112,9 +129,10 @@ uv run --frozen --extra dev python scripts/captured_proof_demo.py
 
 The script creates an isolated Git repository, changes a real file, runs a real
 check through `doneproof capture`, validates the receipt, and validates its JSON
-schema. The recorded run used by the demo completed the full flow in `0.42`
-seconds on the development machine; that is evidence for this run, not a
-cross-machine performance guarantee.
+schema. The latest recorded candidate demo completed capture, receipt
+validation, and schema validation in `0.58` seconds (`0.70` seconds wall time)
+on the development machine; that is evidence for this run, not a cross-machine
+performance guarantee.
 
 Use the command in your own changed repository:
 
