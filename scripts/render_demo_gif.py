@@ -3,7 +3,7 @@ from __future__ import annotations
 from html import escape
 from pathlib import Path
 
-from captured_proof_demo import DemoResult, run_demo
+from captured_proof_demo import DEMO_FRAME_DURATIONS_MS, DemoResult, run_demo
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -100,53 +100,57 @@ def build_frames(result: DemoResult) -> list[Image.Image]:
     git_scope = proof["git_scope"]
     return [
         render_frame(
-            "The old problem",
+            "Local check evidence for AI code changes",
             [
-                ('$ doneproof new --command "passed:pytest"', "prompt"),
-                ("A person or agent typed the word “passed”.", "warn"),
-                ("DoneProof could validate the field — not the execution.", "error"),
+                ("Run the check.", "accent"),
+                ("Get a shareable receipt tied to the current Git change.", "accent"),
                 ("", "muted"),
-                ("Agent summaries are not evidence.", "accent"),
+                ("$ doneproof capture --task \"Check this change\" -- \\", "prompt"),
+                ("    git diff --check", "prompt"),
+                ("", "muted"),
+                ("No proof, no done.", "ok"),
             ],
         ),
         render_frame(
-            "Captured Proof v0.6 candidate",
+            "One real command. One current change.",
             [
-                ("$ doneproof capture --task \"Verify the agent change\" \\", "prompt"),
-                ("    --changed-file README.md -- python verify_agent_change.py", "prompt"),
-                ("agent-change-check: PASS", "ok"),
+                ("Changed file auto-selected: README.md", "accent"),
+                ("Running: git diff --check", "prompt"),
                 ("", "muted"),
                 (
                     f"Captured Proof: PASS  ·  exit 0  ·  {proof['duration_ms']} ms",
                     "ok",
                 ),
-                ("The check ran. The CLI recorded the result itself.", "accent"),
+                ("Receipt: .doneproof/receipts/latest.json", "muted"),
+                ("Review state: awaiting_review", "warn"),
+                ("DoneProof recorded the run; nobody typed “passed”.", "accent"),
             ],
         ),
         render_frame(
-            "Machine-captured receipt",
+            "Evidence without storing the evidence payload",
             [
                 (f"output       {_short_digest(output['sha256'])}", "muted"),
                 (f"git scope     {_short_digest(git_scope['sha256'])}", "muted"),
                 (f"integrity     {_short_digest(proof['integrity_sha256'])}", "muted"),
                 ("raw output     not stored", "ok"),
-                ("local paths    redacted", "ok"),
-                ("review state   awaiting_review", "warn"),
+                ("Git diff       not stored", "ok"),
+                ("changed file   README.md", "accent"),
                 ("", "muted"),
-                ("Evidence without turning the receipt into a secret sink.", "accent"),
+                ("The receipt is tied to this Git change.", "accent"),
             ],
         ),
         render_frame(
-            "Verified in a real isolated repository",
+            "Share the receipt. Keep human review.",
             [
                 ("$ doneproof check", "prompt"),
                 ("DoneProof: PASS", "ok"),
                 ("$ doneproof schema-check", "prompt"),
                 ("DoneProof schema: PASS", "ok"),
-                ("", "muted"),
+                ("$ doneproof report", "prompt"),
+                ("Task: Check this change", "ok"),
+                ("Receipt status: PASS", "ok"),
                 (f"Full demo runtime: {result.elapsed_seconds:.2f} seconds", "muted"),
-                ("Machine receipt → human review", "accent"),
-                ("No proof, no done.", "ok"),
+                ("Machine-captured receipt → human review", "accent"),
             ],
         ),
     ]
@@ -157,15 +161,15 @@ def write_svg(result: DemoResult) -> None:
     output = proof["output"]
     git_scope = proof["git_scope"]
     lines = [
-        ("$ doneproof capture --task \"Verify the agent change\" -- …", TEXT),
-        ("agent-change-check: PASS", GREEN),
+        ("$ doneproof capture --task \"Check this change\" -- git diff --check", TEXT),
+        ("Changed file auto-selected: README.md", CYAN),
         (f"exit 0 · {proof['duration_ms']} ms · raw output not stored", GREEN),
         (f"output    {_short_digest(output['sha256'])}", MUTED),
         (f"git scope  {_short_digest(git_scope['sha256'])}", MUTED),
         (f"integrity  {_short_digest(proof['integrity_sha256'])}", MUTED),
-        ("DoneProof: PASS · schema: PASS", GREEN),
+        ("check: PASS · schema: PASS · report: PASS", GREEN),
         (f"Real isolated demo: {result.elapsed_seconds:.2f}s", CYAN),
-        ("Machine receipt → human review. No proof, no done.", TEXT),
+        ("Shareable receipt → human review. No proof, no done.", TEXT),
     ]
     text = "\n".join(
         (
@@ -203,7 +207,7 @@ def main() -> None:
         GIF_PATH,
         save_all=True,
         append_images=frames[1:],
-        duration=[1900, 2700, 2600, 2600],
+        duration=DEMO_FRAME_DURATIONS_MS,
         loop=0,
         optimize=True,
         disposal=2,
@@ -214,6 +218,7 @@ def main() -> None:
     print(f"wrote {POSTER_PATH.relative_to(ROOT)}")
     print(f"wrote {SVG_PATH.relative_to(ROOT)}")
     print(f"demo runtime: {result.elapsed_seconds:.2f}s")
+    print(f"animation runtime: {sum(DEMO_FRAME_DURATIONS_MS) / 1000:.1f}s")
 
 
 if __name__ == "__main__":

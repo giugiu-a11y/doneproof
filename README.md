@@ -113,7 +113,7 @@ one current, privacy-safe change:
 ```bash
 python3 -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@feature/captured-proof-v0.6"
 doneproof capture --task "Check this change" -- git diff --check
-doneproof check
+doneproof report
 ```
 
 DoneProof automatically selects the current privacy-safe changed files.
@@ -127,21 +127,17 @@ Run the complete isolated demo from a candidate checkout:
 uv run --frozen --extra dev python scripts/captured_proof_demo.py
 ```
 
-The script creates an isolated Git repository, changes a real file, runs a real
-check through `doneproof capture`, validates the receipt, and validates its JSON
-schema. The latest recorded candidate demo completed capture, receipt
-validation, and schema validation in `0.58` seconds (`0.70` seconds wall time)
-on the development machine; that is evidence for this run, not a cross-machine
+The script creates an isolated Git repository, changes a real file, auto-selects
+that file, runs `git diff --check` through `doneproof capture`, validates the
+receipt and JSON schema, and renders the human-readable report. The measured
+runtime printed by the script is evidence for that run, not a cross-machine
 performance guarantee.
 
 Use the command in your own changed repository:
 
 ```bash
-doneproof capture \
-  --task "Verify the agent change" \
-  --changed-file README.md \
-  -- \
-  python3 verify_agent_change.py
+doneproof capture --task "Run the repository tests" -- python3 -m pytest -q
+doneproof report
 ```
 
 Captured Proof records:

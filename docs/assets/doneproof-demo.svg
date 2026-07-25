@@ -3,13 +3,13 @@
   <rect x="32" y="30" width="1036" height="560" rx="14" fill="#111315" stroke="#2a2f35"/>
   <rect x="32" y="30" width="1036" height="54" rx="14" fill="#1d2126"/>
   <text x="550" y="64" text-anchor="middle" fill="#f5f7fa" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="19">Captured Proof v0.6 candidate</text>
-  <text x="70" y="132" fill="#f5f7fa" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">$ doneproof capture --task &quot;Verify the agent change&quot; -- …</text>
-  <text x="70" y="176" fill="#7adf9b" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">agent-change-check: PASS</text>
-  <text x="70" y="220" fill="#7adf9b" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">exit 0 · 10 ms · raw output not stored</text>
-  <text x="70" y="264" fill="#9aa4af" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">output    sha256:c09002319d62483c…</text>
+  <text x="70" y="132" fill="#f5f7fa" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">$ doneproof capture --task &quot;Check this change&quot; -- git diff --check</text>
+  <text x="70" y="176" fill="#83d6ff" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">Changed file auto-selected: README.md</text>
+  <text x="70" y="220" fill="#7adf9b" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">exit 0 · 12 ms · raw output not stored</text>
+  <text x="70" y="264" fill="#9aa4af" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">output    sha256:e3b0c44298fc1c14…</text>
   <text x="70" y="308" fill="#9aa4af" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">git scope  sha256:4638e522998bb06c…</text>
-  <text x="70" y="352" fill="#9aa4af" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">integrity  sha256:4c07e0041668a789…</text>
-  <text x="70" y="396" fill="#7adf9b" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">DoneProof: PASS · schema: PASS</text>
-  <text x="70" y="440" fill="#83d6ff" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">Real isolated demo: 0.37s</text>
-  <text x="70" y="484" fill="#f5f7fa" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">Machine receipt → human review. No proof, no done.</text>
+  <text x="70" y="352" fill="#9aa4af" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">integrity  sha256:199e15b0e6aa3057…</text>
+  <text x="70" y="396" fill="#7adf9b" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">check: PASS · schema: PASS · report: PASS</text>
+  <text x="70" y="440" fill="#83d6ff" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">Real isolated demo: 0.41s</text>
+  <text x="70" y="484" fill="#f5f7fa" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">Shareable receipt → human review. No proof, no done.</text>
 </svg>

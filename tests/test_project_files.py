@@ -155,8 +155,11 @@ def test_release_readiness_docs_exist() -> None:
         ROOT / "docs" / "CODE_QUALITY_REVIEW.md",
         ROOT / "docs" / "ADVERSARIAL_REVIEW.md",
         ROOT / "scripts" / "prepublish_check.sh",
+        ROOT / "scripts" / "captured_proof_demo.py",
         ROOT / "scripts" / "render_demo_gif.py",
+        ROOT / "docs" / "DEMO.md",
         ROOT / "docs" / "assets" / "doneproof-demo.gif",
+        ROOT / "docs" / "assets" / "doneproof-demo-poster.png",
         ROOT / "docs" / "assets" / "doneproof-demo.svg",
     ]
 
@@ -170,6 +173,19 @@ def test_readme_explains_relevance() -> None:
     assert "Why It Exists" in readme
     assert "real multi-agent work" in readme
     assert "When It Helps" in readme
+
+
+def test_readme_has_one_coherent_captured_proof_activation_path() -> None:
+    readme = ROOT.joinpath("README.md").read_text(encoding="utf-8")
+
+    assert "Local check evidence for AI code changes." in readme
+    assert "Get a shareable receipt tied to the current Git change." in readme
+    assert (
+        'doneproof capture --task "Check this change" -- git diff --check'
+        in readme
+    )
+    assert "doneproof report" in readme
+    assert "verify_agent_change.py" not in readme
 
 
 def test_agent_integration_guides_exist() -> None:

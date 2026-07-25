@@ -16,16 +16,16 @@ The script:
 1. creates an isolated Git repository;
 2. initializes DoneProof and commits a clean baseline;
 3. changes `README.md`;
-4. executes a real check through `doneproof capture`;
+4. auto-selects that changed file and runs `git diff --check` through
+   `doneproof capture`;
 5. writes a receipt with exit code, duration, sanitized output digest, and
    content-derived Git-scope digest;
-6. runs `doneproof check` and `doneproof schema-check`;
+6. runs `doneproof check`, `doneproof schema-check`, and `doneproof report`;
 7. fails unless every step succeeds.
 
-On 2026-07-25, the latest recorded candidate demo completed capture, receipt
-validation, and schema validation in `0.58` seconds (`0.70` seconds wall time)
-on the development machine. Treat that as a receipt for this run, not a
-universal benchmark.
+The script prints its measured runtime. Treat that as evidence for the
+individual run, not a universal performance benchmark. The generated animation
+shows the same real flow in `10.4` seconds.
 
 ## Reproduce It
 

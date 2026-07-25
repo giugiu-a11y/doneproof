@@ -1,4 +1,4 @@
-.PHONY: lint test compile smoke check prepublish
+.PHONY: lint test compile smoke demo demo-assets check prepublish
 
 PYTHON ?= $(shell command -v python3.12 || command -v python3.11 || command -v python3.10 || command -v python3)
 UV_RUN = uv run --extra dev --python $(PYTHON)
@@ -26,6 +26,12 @@ smoke:
 	$(UV_RUN) doneproof check --root /tmp/doneproof-smoke
 	! $(UV_RUN) doneproof check --root . --receipt examples/receipts/failing.json
 	! $(UV_RUN) doneproof schema-check --root . --receipt examples/receipts/failing.json
+
+demo:
+	$(UV_RUN) python scripts/captured_proof_demo.py
+
+demo-assets:
+	$(UV_RUN) python scripts/render_demo_gif.py
 
 check: lint test compile smoke
 

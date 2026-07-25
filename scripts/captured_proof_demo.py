@@ -9,6 +9,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+DEMO_FRAME_DURATIONS_MS = (2200, 2800, 2600, 2800)
+
 
 @dataclass(frozen=True)
 class DemoResult:
@@ -16,6 +18,7 @@ class DemoResult:
     capture_output: str
     check_output: str
     schema_output: str
+    report_output: str
     receipt: dict[str, Any]
 
 
@@ -28,14 +31,10 @@ def run_demo() -> DemoResult:
         _doneproof(root, "init", "--root", ".")
         _git(root, "init", "-b", "main")
         _git(root, "config", "user.name", "DoneProof Demo")
-        _git(root, "config", "user.email", "demo@doneproof.local")
+        _git(root, "config", "user.email", "demo@example.invalid")
 
         root.joinpath("README.md").write_text(
             "# Example agent change\n\nBaseline.\n",
-            encoding="utf-8",
-        )
-        root.joinpath("verify_agent_change.py").write_text(
-            "print('agent-change-check: PASS')\n",
             encoding="utf-8",
         )
         _git(root, "add", ".")
@@ -52,15 +51,15 @@ def run_demo() -> DemoResult:
             "--root",
             ".",
             "--task",
-            "Verify the agent change",
-            "--changed-file",
-            "README.md",
+            "Check this change",
             "--",
-            sys.executable,
-            "verify_agent_change.py",
+            "git",
+            "diff",
+            "--check",
         )
         check = _doneproof(root, "check", "--root", ".")
         schema = _doneproof(root, "schema-check", "--root", ".")
+        report = _doneproof(root, "report", "--root", ".")
         receipt = json.loads(
             root.joinpath(".doneproof", "receipts", "latest.json").read_text(
                 encoding="utf-8"
@@ -72,6 +71,7 @@ def run_demo() -> DemoResult:
         capture_output=capture.stdout.strip(),
         check_output=check.stdout.strip(),
         schema_output=schema.stdout.strip(),
+        report_output=report.stdout.strip(),
         receipt=receipt,
     )
 
@@ -111,10 +111,14 @@ def main() -> int:
     print(result.capture_output)
     print(result.check_output)
     print(result.schema_output)
+    print(result.report_output)
+    print(f"captured_command={proof['command']}")
+    print(f"changed_files={','.join(result.receipt['changed_files'])}")
     print(f"output_digest={output['sha256']}")
     print(f"git_scope_digest={git_scope['sha256']}")
     print(f"integrity_digest={proof['integrity_sha256']}")
     print(f"raw_output_stored={str(output['content_stored']).lower()}")
+    print(f"git_diff_stored={str(git_scope['content_stored']).lower()}")
     print(f"demo_elapsed_seconds={result.elapsed_seconds:.2f}")
     print("DEMO_RESULT=PASS")
     return 0
