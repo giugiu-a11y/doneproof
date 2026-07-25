@@ -168,21 +168,19 @@ GitHub install is intentional for the first public pass. I want feedback on the 
 
 ## Positioning Lines
 
-- Agent summaries are not evidence.
-- Make AI handoffs reviewable.
-- Keep agents humble: awaiting review, not done.
-- A receipt layer for coding agents.
-- Local-first proof before human review.
+- Your agent says the check passed. Review what actually ran.
+- Local check evidence for AI code changes.
+- Run the check. Get a shareable receipt tied to the current Git change.
+- Captured Proof connects one observed command result to the selected Git scope.
 
-## DoneProof System Context
+## Scope Boundary
 
-DoneProof is the evidence layer in a three-part local control system:
+DoneProof does not manage session selection, cross-session continuity, or memory
+promotion. Continuity Loop and Memory Boundary are separate products with their
+own categories and first-use paths.
 
-1. DoneProof Continuity Loop detects stale re-entry before work resumes.
-2. DoneProof records a reviewable receipt for the work itself.
-3. DoneProof Memory Boundary promotes only evidence-backed state into shared handoffs.
-
-Use this context when someone asks whether DoneProof also manages session selection or agent memory. The three projects are complementary, and each remains independently useful.
+Use this boundary when someone asks whether the projects form a suite. Do not
+present them as a system, suite, platform, family, bundle, or required sequence.
 
 ## Manual Posting Checklist
 

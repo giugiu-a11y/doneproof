@@ -179,12 +179,21 @@ def test_readme_has_one_coherent_captured_proof_activation_path() -> None:
     readme = ROOT.joinpath("README.md").read_text(encoding="utf-8")
 
     assert "Local check evidence for AI code changes." in readme
-    assert "Get a shareable receipt tied to the current Git change." in readme
+    assert "Your agent says the check passed. Review what actually ran." in readme
+    assert (
+        "**Captured Proof** runs one check and creates a shareable receipt tied to the"
+        in readme
+    )
+    assert "It records locally observed execution evidence." in readme
     assert (
         'doneproof capture --task "Check this change" -- git diff --check'
         in readme
     )
     assert "doneproof report" in readme
+    assert readme.index("## Try Captured Proof") < readme.index(
+        "## Manual Receipt Flow (v0.5.0)"
+    )
+    assert "## DoneProof System" not in readme
     assert "verify_agent_change.py" not in readme
 
 

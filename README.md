@@ -2,9 +2,16 @@
 
 Local check evidence for AI code changes.
 
-Run the check. Get a shareable receipt tied to the current Git change.
+Your agent says the check passed. Review what actually ran.
 
-No proof, no done.
+**Captured Proof** runs one check and creates a shareable receipt tied to the
+current Git change.
+
+It records locally observed execution evidence. It does not prove that the code
+is correct, secure, complete, independently attested, signed, or safe to merge.
+Human review remains final.
+
+![Captured Proof: command, Git scope, and reviewable receipt](docs/assets/doneproof-demo.gif)
 
 [![CI](https://github.com/giugiu-a11y/doneproof/actions/workflows/ci.yml/badge.svg)](https://github.com/giugiu-a11y/doneproof/actions/workflows/ci.yml)
 [![Action Smoke](https://github.com/giugiu-a11y/doneproof/actions/workflows/action-smoke.yml/badge.svg)](https://github.com/giugiu-a11y/doneproof/actions/workflows/action-smoke.yml)
@@ -12,13 +19,24 @@ No proof, no done.
 [![Release](https://img.shields.io/github/v/release/giugiu-a11y/doneproof)](https://github.com/giugiu-a11y/doneproof/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-DoneProof turns a local verification command into a reviewable receipt tied to
-the current Git change. It records what ran before an agent claims work is
-ready.
+## Try Captured Proof
 
-It does not replace review. It makes review harder to fake.
+The current public release is still `v0.5.0`. Captured Proof is an unreleased
+`v0.6` candidate being reviewed on this branch.
 
-![DoneProof terminal demo](docs/assets/doneproof-demo.gif)
+Requires Python 3.10+ and a Git repository with at least one current,
+privacy-safe change:
+
+```bash
+python3 -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@feature/captured-proof-v0.6"
+doneproof capture --task "Check this change" -- git diff --check
+doneproof report
+```
+
+DoneProof automatically selects the current privacy-safe changed files.
+`git diff --check` is a universal first check for whitespace errors. Replace it
+with the repository's real test, lint, build, or verification command when
+evaluating the code itself.
 
 ## What You Get
 
@@ -63,63 +81,7 @@ DoneProof adds one rule:
 
 > If there is no receipt, the work is not ready.
 
-## Quick Start
-
-Requires Python 3.10+.
-
-Install from GitHub:
-
-```bash
-python3 -m pip install --upgrade pip
-python3 -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@v0.5.0"
-```
-
-Use it inside a repository:
-
-```bash
-doneproof init
-doneproof new \
-  --task "Add health check endpoint" \
-  --changed-file README.md \
-  --command "passed:python3 -m pytest" \
-  --evidence "test:pytest passed" \
-  --risk "Manual browser check not performed"
-doneproof check
-doneproof schema-check
-doneproof evidence git-diff
-doneproof evidence git-diff --mode staged
-doneproof report
-doneproof report --format json
-doneproof badge --format markdown
-```
-
-For local development on DoneProof itself:
-
-```bash
-git clone https://github.com/giugiu-a11y/doneproof.git
-cd doneproof
-uv sync --extra dev --frozen
-make prepublish
-```
-
-## Captured Proof v0.6 Candidate
-
-The current public release is still `v0.5.0`. Captured Proof is an unreleased
-candidate being reviewed on this branch.
-
-Fastest external trial: run these commands inside a Git repository with at least
-one current, privacy-safe change:
-
-```bash
-python3 -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@feature/captured-proof-v0.6"
-doneproof capture --task "Check this change" -- git diff --check
-doneproof report
-```
-
-DoneProof automatically selects the current privacy-safe changed files.
-`git diff --check` is a universal first check for whitespace errors; replace it
-with the repository's real test, lint, build, or verification command when
-evaluating the change itself.
+## How Captured Proof Works
 
 Run the complete isolated demo from a candidate checkout:
 
@@ -159,6 +121,34 @@ actual code and diff remains required.
 The candidate acceptance criteria, trust boundary, and remaining release gates
 are documented in
 [docs/CAPTURED_PROOF_V0_6_REVIEW.md](docs/CAPTURED_PROOF_V0_6_REVIEW.md).
+
+## Manual Receipt Flow (v0.5.0)
+
+The stable release also supports manually authored receipts:
+
+```bash
+python3 -m pip install --upgrade pip
+python3 -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@v0.5.0"
+doneproof init
+doneproof new \
+  --task "Add health check endpoint" \
+  --changed-file README.md \
+  --command "passed:python3 -m pytest" \
+  --evidence "test:pytest passed" \
+  --risk "Manual browser check not performed"
+doneproof check
+doneproof schema-check
+doneproof report
+```
+
+For local development on DoneProof itself:
+
+```bash
+git clone https://github.com/giugiu-a11y/doneproof.git
+cd doneproof
+uv sync --extra dev --frozen
+make prepublish
+```
 
 ## Demo
 
@@ -398,16 +388,6 @@ DoneProof is useful when:
 - the team wants agents to say `awaiting_review` instead of pretending approval already happened.
 
 It is not a replacement for tests, CI, code review, product QA, or human approval. It is a lightweight pressure point that makes those steps easier to trust.
-
-## DoneProof System
-
-DoneProof is the evidence layer in a three-part local control system for AI coding agents:
-
-1. [DoneProof Continuity Loop](https://github.com/giugiu-a11y/doneproof-continuity-loop) sanitizes handoffs, selects the current session lineage, and detects stale re-entry before work resumes.
-2. DoneProof records changed files, commands, evidence, risks, and review status for the work itself.
-3. [DoneProof Memory Boundary](https://github.com/giugiu-a11y/doneproof-memory-boundary) keeps scratch notes private and promotes only evidence-backed state into shared handoffs.
-
-Each tool works independently. Together, they cover re-entry, execution proof, and durable shared context without replacing tests or human review.
 
 ## Release Status
 
