@@ -1,77 +1,86 @@
 # Value Proof
 
-This file explains why DoneProof is worth publishing as a standalone open-source piece.
+This file defines the value claim that DoneProof must earn before Captured Proof
+is released.
 
-## One-Sentence Value
+## Category
 
-DoneProof makes AI agent handoffs auditable before a human trusts them.
+Local check evidence for AI code changes.
+
+## Promise
+
+Run the check. Get a shareable receipt tied to the current Git change.
 
 ## Who Gets Value First
 
-- solo developers using coding agents daily;
-- founders running multiple repos with AI help;
-- agencies handing agent work between clients;
-- small engineering teams experimenting with Codex, Claude Code, Cursor, OpenCode, Cline, or Aider;
-- maintainers who want PRs from agents to include proof, not just summaries.
+Repository maintainers and senior reviewers handling AI-authored changes. Their
+problem is not a missing agent summary; it is uncertainty about what check
+actually ran, which Git change it covered, and what remains unapproved.
 
-## What It Catches Today
+## Named Mechanism
 
-DoneProof v0.2 catches:
+Captured Proof:
 
-- missing receipt files;
-- invalid JSON receipts;
-- missing required receipt fields;
-- forbidden completion statuses;
-- empty changed-file lists;
-- empty command lists;
-- empty evidence lists;
-- unsafe changed-file paths;
-- malformed command records;
-- skipped commands without a reason;
-- common premature completion claims.
-- sanitized git diff summaries with changed paths and addition/deletion counts.
+- executes one argument-vector command without a shell;
+- records the observed exit code and duration;
+- resolves the selected changed Git scope;
+- stores privacy-safe digests instead of raw command output or diff content;
+- integrity-binds the captured fields inside the receipt;
+- leaves the successful workflow in `awaiting_review`.
 
-## What It Does Not Catch Yet
+## What It Proves
 
-DoneProof v0.2 does not prove:
+The receipt is evidence that DoneProof observed a specific command result and
+bound it to a selected Git scope on that machine.
 
-- the command output is authentic;
-- the tests cover the right behavior;
-- the UX was visually checked;
-- the product decision is correct;
-- the code is secure;
-- a human approved the work.
+## What It Does Not Prove
 
-This is intentional. The first release is a proof discipline layer, not a full auditor.
+It does not prove:
+
+- semantic correctness or adequate test coverage;
+- security, authorship, or an uncompromised machine;
+- signed or remote attestation;
+- approval to merge, deploy, or publish;
+- that redaction can recognize every possible secret.
+
+Human review remains final.
 
 ## Why It Is Not Just A Checklist
 
-A checklist lives in a prompt and disappears.
+A prompt checklist can be claimed without execution. Captured Proof runs the
+command and produces a machine-readable, schema-validatable artifact that a
+reviewer can inspect or automate against.
 
-DoneProof creates a project artifact:
+## Activation Proof
 
-- machine-readable;
-- reviewable;
-- testable in CI;
-- portable across agents;
-- easy to extend with stricter policy later.
+The candidate demonstration:
 
-## Adoption Test
+1. runs `git diff --check`;
+2. captures the observed result against the changed Git scope;
+3. validates the receipt and JSON Schema;
+4. renders the review state and privacy boundary;
+5. completes the visible story in a 10.4-second demonstration.
 
-A new user should be able to:
+The measured demo command path completed in 0.50 seconds on one development
+machine. This is evidence that the under-60-second activation target is
+feasible, not a universal performance claim.
 
-1. install the package locally;
-2. run `doneproof init`;
-3. create a receipt with `doneproof new`;
-4. run `doneproof check`;
-5. understand exactly why a receipt failed.
+## Market Proof
 
-If that takes more than five minutes, the release is not ready.
+Market proof is still pending. It requires:
+
+- two qualified maintainer pain confirmations;
+- one receipt from an external real change;
+- one repeat external use.
+
+Until those events occur, DoneProof has a verified candidate and a testable
+value hypothesis, not demonstrated adoption.
 
 ## Relevance Test
 
-DoneProof remains relevant only if it keeps answering this question:
+Every core feature must improve the answer to:
 
-> What did the agent actually prove?
+> What check actually ran against this Git change, and what still requires
+> human review?
 
-Features that do not improve that answer should not enter the core.
+Features that do not improve that answer remain outside the core.

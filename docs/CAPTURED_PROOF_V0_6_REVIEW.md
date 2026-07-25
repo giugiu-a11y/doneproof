@@ -1,16 +1,15 @@
 # Captured Proof v0.6 Review
 
-Status: unreleased candidate
+Status: unreleased public draft candidate
 
 Captured Proof changes the DoneProof evidence model from a typed command claim
 to a command that DoneProof executes itself. The resulting receipt binds the
-observed exit code, duration, sanitized output digest, and Git-scope digest into
+observed exit code, duration, sanitized-output digest, and Git-scope digest into
 one integrity-checked object.
 
 ## Candidate Acceptance
 
-The candidate is acceptable for release review when all of these statements
-remain true:
+The candidate is acceptable for release review only while all remain true:
 
 - the command is executed as an argument list, without a shell;
 - the child exit code is returned by `doneproof capture`;
@@ -27,65 +26,67 @@ remain true:
 ## Trust Boundary
 
 Captured Proof is machine-captured and tamper-evident inside one receipt. It is
-not a signed attestation, a trusted execution environment, or proof that the
-machine itself was uncompromised. A person reviewing consequential work must
-still inspect the code, diff, and relevant environment.
+not a signed attestation, trusted execution environment, correctness proof, or
+proof that the machine itself was uncompromised. Consequential work still
+requires inspection of the code, diff, checks, and relevant environment.
 
-Redaction is intentionally conservative but cannot recognize every possible
-secret format. Secrets should not be passed in command-line arguments because
-other local processes may be able to inspect the operating system process
-table. Prefer scoped environment injection or an existing secret manager, and
-review the command output before sharing a receipt.
+Redaction is intentionally conservative but cannot recognize every secret
+format. Do not pass secrets in command-line arguments. Review every receipt
+before sharing it.
 
-## Release Gates
+## Functional Candidate Evidence — 2026-07-25
 
-The implementation and demo do not authorize publication. Release still
-requires:
-
-1. the complete test, lint, schema, package, and installed-wheel checks;
-2. a privacy scan of the exact release diff and assets;
-3. one qualified conversation with a maintainer who operates an agent workflow;
-4. final owner review of the public release and distribution copy.
-
-Until all four close, the public release remains `v0.5.0`.
-
-## Candidate Evidence — 2026-07-25
-
-Candidate implementation commit:
-`8d8549692f7295815e3f1b6a842c05922762021e`
+Functional baseline:
+`d1502aa2488c6a6e0b9fb292757f1b854879ce71`
 
 Public review:
 [draft pull request #35](https://github.com/giugiu-a11y/doneproof/pull/35)
 
-Candidate verification is complete:
+Evidence on that functional baseline:
 
-- all 57 repository tests passed;
-- Ruff, bytecode compilation, and the frozen lockfile check passed;
-- a `doneproof-0.6.0-py3-none-any.whl` wheel was built and installed in a clean
-  Python 3.12 environment;
+- all 59 repository tests passed;
+- Ruff, bytecode compilation, frozen-lockfile, package, and installed-wheel
+  checks passed;
 - the installed wheel passed `doctor`, a real `capture`, `check`,
   `schema-check`, and JSON `report`;
-- the latest isolated demo completed capture, receipt validation, and schema
-  validation in `0.58` seconds (`0.70` seconds wall time);
-- the exact pushed Git range passed Gitleaks 8.30.1 with no leaks;
-- added lines passed the internal-runtime marker scan; the three deliberate
-  privacy-fixture lines were reviewed; generated assets passed embedded-string
-  and metadata checks;
-- GitHub completed `action-smoke`, `Secret scan`, and the Python 3.10, 3.11,
-  and 3.12 CI jobs successfully on that exact commit.
+- a fresh isolated demo completed the full path in 0.50 seconds;
+- the shareable GIF is 1100 by 620 pixels, 10.4 seconds, four frames, and 94,674
+  bytes;
+- the social preview is 1280 by 640 pixels;
+- the receipt stored neither raw command output nor Git diff content;
+- the exact pushed candidate passed Action Smoke, Secret scan, and Python 3.10,
+  3.11, and 3.12 CI.
 
-## Gate Status
+Documentation-only changes after the functional baseline require their own
+exact-head checks. Always verify the live pull request head and checks instead
+of treating this file as a self-referential commit record.
 
-1. **Engineering gate: passed for the candidate commit.** Local verification
-   and all five required GitHub checks are green on the exact pushed head.
-2. **Privacy gate: passed for the candidate commit.** The exact pushed range,
-   added lines, generated assets, and public copy were checked. This gate must
-   be repeated if the release diff changes.
-3. **Maintainer feedback gate: pending.** An invitation is not a qualified
-   conversation; a concrete maintainer response is required.
-4. **Owner gate: partially approved.** Creating the public candidate PR and
-   maintainer outreach is approved. Publishing the release or distribution copy
-   still requires a separate final review.
+## Release Gates
 
-The candidate is live as a draft public review PR. It is not ready for a
-`v0.6.0` release.
+1. **Engineering:** repeat the complete local and remote checks on the exact
+   release head.
+2. **Privacy:** scan the exact release diff, copy, and generated assets.
+3. **Pain confirmation:** receive workflow-level confirmation from at least two
+   of five maintainers.
+4. **External activation:** one maintainer produces and reviews a receipt from a
+   real change.
+5. **Repeat use:** one external user repeats the workflow.
+6. **Owner approval:** approve the exact release and first distribution post.
+
+Invitations, green tests, and a polished demonstration do not satisfy the
+external-use gates.
+
+## Current Gate Status
+
+- Engineering: passed on the functional baseline; must pass again on the final
+  documentation-synchronized head.
+- Privacy: passed on the functional baseline; must be repeated on the final
+  release diff.
+- Pain confirmation: 0 of 2 qualified confirmations.
+- External activation: 0 of 1.
+- Repeat use: 0 of 1.
+- Owner approval: candidate work and maintainer outreach approved; release and
+  public distribution not approved.
+
+The candidate is available for review in a draft pull request. The stable
+release remains `v0.5.0`.

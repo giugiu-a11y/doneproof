@@ -31,10 +31,14 @@
 
 ### Verified for the release candidate
 
-- The latest isolated candidate demo completed capture, receipt validation, and
-  schema validation in `0.58` seconds (`0.70` seconds wall time) on the
-  development machine; this is a measured run, not a cross-machine performance
-  claim.
+- The functional candidate passed 59 repository tests, package and
+  installed-wheel checks, and five required GitHub checks.
+- A fresh isolated candidate demo completed capture, receipt validation, and
+  schema validation in `0.50` seconds on one development machine.
+- The shareable demonstration is `10.4` seconds at `1100x620`; the social
+  preview is `1280x640`.
+- These are candidate measurements and artifact facts, not cross-machine
+  performance or adoption claims.
 
 ### Changed
 
