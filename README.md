@@ -399,6 +399,16 @@ DoneProof is useful when:
 
 It is not a replacement for tests, CI, code review, product QA, or human approval. It is a lightweight pressure point that makes those steps easier to trust.
 
+## DoneProof System
+
+DoneProof is the evidence layer in a three-part local control system for AI coding agents:
+
+1. [DoneProof Continuity Loop](https://github.com/giugiu-a11y/doneproof-continuity-loop) sanitizes handoffs, selects the current session lineage, and detects stale re-entry before work resumes.
+2. DoneProof records changed files, commands, evidence, risks, and review status for the work itself.
+3. [DoneProof Memory Boundary](https://github.com/giugiu-a11y/doneproof-memory-boundary) keeps scratch notes private and promotes only evidence-backed state into shared handoffs.
+
+Each tool works independently. Together, they cover re-entry, execution proof, and durable shared context without replacing tests or human review.
+
 ## Release Status
 
 Current public release: `v0.5.0`.
