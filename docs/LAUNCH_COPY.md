@@ -174,6 +174,16 @@ GitHub install is intentional for the first public pass. I want feedback on the 
 - A receipt layer for coding agents.
 - Local-first proof before human review.
 
+## DoneProof System Context
+
+DoneProof is the evidence layer in a three-part local control system:
+
+1. DoneProof Continuity Loop detects stale re-entry before work resumes.
+2. DoneProof records a reviewable receipt for the work itself.
+3. DoneProof Memory Boundary promotes only evidence-backed state into shared handoffs.
+
+Use this context when someone asks whether DoneProof also manages session selection or agent memory. The three projects are complementary, and each remains independently useful.
+
 ## Manual Posting Checklist
 
 - Confirm the repo is public.
