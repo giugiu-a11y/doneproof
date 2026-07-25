@@ -1,11 +1,12 @@
 # DoneProof
 
-Local check evidence for AI code changes.
+One real check. One Git-aware receipt for an AI code change.
 
 Your agent says the check passed. Review what actually ran.
 
-**Captured Proof** runs one check and creates a shareable receipt tied to the
-current Git change.
+**Captured Proof** runs your existing check locally and creates a shareable
+receipt tied to the current Git change. The first receipt needs no account,
+agent integration, policy file, or CI change.
 
 It records locally observed execution evidence. It does not prove that the code
 is correct, secure, complete, independently attested, signed, or safe to merge.
@@ -44,8 +45,11 @@ Trying the candidate is useful only if it answers the maintainer question:
 did the receipt reduce review ambiguity, make no material difference, or add
 ceremony?
 
-Use the [five-minute validation trial](docs/VALIDATION_TRIAL.md) on one
-public-safe change, then report the review outcome on
+Bring one public-safe, agent-authored change and its real check. You run the
+command in a repository you control; the trial can be guided or self-serve and
+requires no product integration. Use the
+[five-minute validation trial](docs/VALIDATION_TRIAL.md), then report the
+review outcome on
 [draft pull request #35](https://github.com/giugiu-a11y/doneproof/pull/35).
 A passing command alone is engineering evidence, not product validation.
 
@@ -406,6 +410,7 @@ Current public release: `v0.5.0`.
 
 The `main` branch is checked by CI and by an Action Smoke workflow that runs the composite action against the passing receipt fixture.
 
-Captured Proof `v0.6` is an unreleased candidate. A clean demonstration now
-exists locally; privacy review, qualified external maintainer feedback, and the
-normal release gate still have to close before publication.
+Captured Proof `v0.6` is an unreleased candidate in public draft review. A clean
+demonstration exists; the product-name gate, final privacy review, qualified
+external maintainer feedback, and the normal release gate still have to close
+before publication.

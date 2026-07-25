@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "doneproof"
 version = "0.6.0"
-description = "Verification receipts for AI agent work. No proof, no done."
+description = "One real check, one Git-aware receipt for an AI code change."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"

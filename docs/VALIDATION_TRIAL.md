@@ -8,6 +8,11 @@ This five-minute trial tests one question:
 The goal is not to produce another passing test. The goal is to observe whether
 the receipt changes a real review decision.
 
+The trial can be guided or self-serve. Bring one public-safe, agent-authored
+change and the real check you already use. You run every command inside a
+repository you control; do not send repository access, source code, secrets, or
+credentials.
+
 ## Before You Start
 
 Use a repository and change that you are allowed to inspect and discuss.
@@ -42,6 +47,8 @@ Inspect the receipt beside the same Git change and answer:
 2. What evidence or linkage was still missing?
 3. Did it fit the review moment, or add ceremony?
 4. Would you use it again without coaching?
+5. Compared with CI or your current review/proof tooling, what would this add
+   or replace?
 
 The receipt should end in `awaiting_review`. That is intentional: Captured
 Proof records observed evidence and leaves approval to the reviewer.
@@ -57,6 +64,8 @@ Change type:
 Check run:
 Review effect: reduced ambiguity | no material difference | added ceremony
 Missing evidence or friction:
+Current alternative:
+What this added or replaced:
 Would repeat without coaching: yes | no
 Optional public-safe receipt or screenshot:
 ```

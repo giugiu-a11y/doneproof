@@ -185,11 +185,14 @@ def test_readme_explains_relevance() -> None:
 def test_readme_has_one_coherent_captured_proof_activation_path() -> None:
     readme = ROOT.joinpath("README.md").read_text(encoding="utf-8")
 
-    assert "Local check evidence for AI code changes." in readme
+    assert "One real check. One Git-aware receipt for an AI code change." in readme
     assert "Your agent says the check passed. Review what actually ran." in readme
     assert (
-        "**Captured Proof** runs one check and creates a shareable receipt tied to the"
+        "**Captured Proof** runs your existing check locally and creates a shareable"
         in readme
+    )
+    assert (
+        "needs no account,\nagent integration, policy file, or CI change." in readme
     )
     assert "It records locally observed execution evidence." in readme
     assert (
