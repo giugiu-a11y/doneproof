@@ -6,6 +6,7 @@ from pathlib import Path
 
 import yaml
 from jsonschema import Draft202012Validator
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -160,11 +161,17 @@ def test_release_readiness_docs_exist() -> None:
         ROOT / "docs" / "DEMO.md",
         ROOT / "docs" / "assets" / "doneproof-demo.gif",
         ROOT / "docs" / "assets" / "doneproof-demo-poster.png",
+        ROOT / "docs" / "assets" / "doneproof-social-preview.png",
         ROOT / "docs" / "assets" / "doneproof-demo.svg",
     ]
 
     for path in required:
         assert path.exists(), path
+
+    social_preview = ROOT / "docs" / "assets" / "doneproof-social-preview.png"
+    with Image.open(social_preview) as image:
+        assert image.size == (1280, 640)
+    assert social_preview.stat().st_size < 1_000_000
 
 
 def test_readme_explains_relevance() -> None:

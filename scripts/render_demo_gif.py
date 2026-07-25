@@ -11,6 +11,7 @@ ASSET_DIR = ROOT / "docs" / "assets"
 GIF_PATH = ASSET_DIR / "doneproof-demo.gif"
 SVG_PATH = ASSET_DIR / "doneproof-demo.svg"
 POSTER_PATH = ASSET_DIR / "doneproof-demo-poster.png"
+SOCIAL_PREVIEW_PATH = ASSET_DIR / "doneproof-social-preview.png"
 
 WIDTH = 1100
 HEIGHT = 620
@@ -45,6 +46,18 @@ def load_font(size: int) -> ImageFont.FreeTypeFont:
 FONT = load_font(24)
 FONT_BOLD = load_font(26)
 FONT_SMALL = load_font(19)
+
+
+def load_display_font(size: int) -> ImageFont.FreeTypeFont:
+    for candidate in (
+        "/System/Library/Fonts/SFNS.ttf",
+        "/System/Library/Fonts/Helvetica.ttc",
+        "/System/Library/Fonts/Supplemental/Arial.ttf",
+    ):
+        path = Path(candidate)
+        if path.exists():
+            return ImageFont.truetype(str(path), size=size)
+    return load_font(size)
 
 
 def draw_window(draw: ImageDraw.ImageDraw, title: str) -> None:
@@ -143,12 +156,12 @@ def build_frames(result: DemoResult) -> list[Image.Image]:
             "Share the receipt. Keep human review.",
             [
                 ("$ doneproof check", "prompt"),
-                ("DoneProof: PASS", "ok"),
+                ("Check result: PASS", "ok"),
                 ("$ doneproof schema-check", "prompt"),
                 ("DoneProof schema: PASS", "ok"),
                 ("$ doneproof report", "prompt"),
                 ("Task: Check this change", "ok"),
-                ("Receipt status: PASS", "ok"),
+                ("Receipt status: awaiting_review", "warn"),
                 (f"Full demo runtime: {result.elapsed_seconds:.2f} seconds", "muted"),
                 ("Machine-captured receipt → human review", "accent"),
             ],
@@ -199,6 +212,108 @@ def write_svg(result: DemoResult) -> None:
     )
 
 
+def write_social_preview(result: DemoResult) -> None:
+    proof = result.receipt["captured_proof"]
+    width = 1280
+    height = 640
+    image = Image.new("RGB", (width, height), "#0b0e12")
+    draw = ImageDraw.Draw(image)
+
+    display_large = load_display_font(72)
+    display_medium = load_display_font(34)
+    display_small = load_display_font(21)
+    mono = load_font(22)
+    mono_small = load_font(19)
+
+    draw.rounded_rectangle(
+        (28, 28, width - 28, height - 28),
+        radius=24,
+        fill="#10151b",
+        outline="#26313b",
+        width=2,
+    )
+    draw.text(
+        (76, 74),
+        "DONEPROOF  ·  LOCAL CHECK EVIDENCE",
+        fill="#83d6ff",
+        font=display_small,
+    )
+    draw.text((72, 135), "Captured Proof", fill="#f7f9fb", font=display_large)
+    draw.text(
+        (76, 228),
+        "See what actually ran.",
+        fill="#aeb8c2",
+        font=display_medium,
+    )
+    draw.text(
+        (76, 302),
+        "One observed command.",
+        fill="#e8edf2",
+        font=display_small,
+    )
+    draw.text(
+        (76, 338),
+        "One current Git change.",
+        fill="#e8edf2",
+        font=display_small,
+    )
+    draw.text(
+        (76, 374),
+        "One reviewable receipt.",
+        fill="#e8edf2",
+        font=display_small,
+    )
+
+    card = (650, 82, 1204, 480)
+    draw.rounded_rectangle(card, radius=18, fill="#090c0f", outline="#2e3944", width=2)
+    draw.rounded_rectangle(
+        (650, 82, 1204, 132),
+        radius=18,
+        fill="#171d23",
+    )
+    draw.rectangle((650, 114, 1204, 132), fill="#171d23")
+    draw.text((680, 96), "REAL RECEIPT", fill="#97a4b1", font=mono_small)
+
+    terminal_lines = [
+        ('$ doneproof capture --task "Check', "#f5f7fa"),
+        ('  this change" -- git diff --check', "#f5f7fa"),
+        ("", "#f5f7fa"),
+        (f"✓ exit 0  ·  {proof['duration_ms']} ms", "#7adf9b"),
+        ("git scope   1 changed file", "#83d6ff"),
+        ("raw output  not stored", "#7adf9b"),
+        ("review      awaiting_review", "#ffd479"),
+    ]
+    y = 158
+    for line, color in terminal_lines:
+        draw.text((680, y), line, fill=color, font=mono)
+        y += 40
+
+    flow_y = 532
+    flow = [
+        ("COMMAND", 76, 264),
+        ("GIT SCOPE", 346, 570),
+        ("REVIEWABLE RECEIPT", 664, 1054),
+    ]
+    for label, left, right in flow:
+        draw.rounded_rectangle(
+            (left, flow_y, right, flow_y + 54),
+            radius=27,
+            fill="#18212a",
+            outline="#334454",
+        )
+        draw.text(
+            ((left + right) / 2, flow_y + 27),
+            label,
+            fill="#eaf0f5",
+            anchor="mm",
+            font=mono_small,
+        )
+    draw.text((305, flow_y + 27), "→", fill="#83d6ff", anchor="mm", font=mono)
+    draw.text((617, flow_y + 27), "→", fill="#83d6ff", anchor="mm", font=mono)
+
+    image.save(SOCIAL_PREVIEW_PATH, optimize=True)
+
+
 def main() -> None:
     ASSET_DIR.mkdir(parents=True, exist_ok=True)
     result = run_demo()
@@ -214,9 +329,11 @@ def main() -> None:
     )
     frames[-1].save(POSTER_PATH, optimize=True)
     write_svg(result)
+    write_social_preview(result)
     print(f"wrote {GIF_PATH.relative_to(ROOT)}")
     print(f"wrote {POSTER_PATH.relative_to(ROOT)}")
     print(f"wrote {SVG_PATH.relative_to(ROOT)}")
+    print(f"wrote {SOCIAL_PREVIEW_PATH.relative_to(ROOT)}")
     print(f"demo runtime: {result.elapsed_seconds:.2f}s")
     print(f"animation runtime: {sum(DEMO_FRAME_DURATIONS_MS) / 1000:.1f}s")
 

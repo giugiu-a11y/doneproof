@@ -5,6 +5,7 @@ concept animation with invented terminal output.
 
 - animated demo: `docs/assets/doneproof-demo.gif`
 - static poster: `docs/assets/doneproof-demo-poster.png`
+- GitHub social preview: `docs/assets/doneproof-social-preview.png`
 - accessible SVG fallback: `docs/assets/doneproof-demo.svg`
 - real isolated flow: `scripts/captured_proof_demo.py`
 - real-run renderer: `scripts/render_demo_gif.py`
@@ -49,8 +50,9 @@ uv run --frozen --extra dev python scripts/render_demo_gif.py
 ```
 
 The renderer prints the generated paths and measured execution time. Review the
-GIF and poster visually after regeneration; file creation alone does not prove
-legibility.
+GIF, poster, and social preview visually after regeneration; file creation
+alone does not prove legibility. The approved social-preview alt text is:
+`Captured Proof: command, Git scope, and reviewable receipt`.
 
 ## What Is Stored
 
