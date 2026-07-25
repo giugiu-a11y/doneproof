@@ -7,7 +7,7 @@ concept animation with invented terminal output.
 - static poster: `docs/assets/doneproof-demo-poster.png`
 - accessible SVG fallback: `docs/assets/doneproof-demo.svg`
 - real isolated flow: `scripts/captured_proof_demo.py`
-- deterministic renderer: `scripts/render_demo_gif.py`
+- real-run renderer: `scripts/render_demo_gif.py`
 
 ## What The Demo Proves
 

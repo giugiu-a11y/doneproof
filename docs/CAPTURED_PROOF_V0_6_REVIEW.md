@@ -48,3 +48,38 @@ requires:
 4. final owner review of the public release and distribution copy.
 
 Until all four close, the public release remains `v0.5.0`.
+
+## Candidate Evidence — 2026-07-25
+
+Local candidate verification is complete:
+
+- all 57 repository tests passed;
+- Ruff, bytecode compilation, and the frozen lockfile check passed;
+- a `doneproof-0.6.0-py3-none-any.whl` wheel was built and installed in a clean
+  Python 3.12 environment;
+- the installed wheel passed `doctor`, a real `capture`, `check`,
+  `schema-check`, and JSON `report`;
+- the latest isolated demo completed capture, receipt validation, and schema
+  validation in `0.58` seconds (`0.70` seconds wall time);
+- the exact text diff passed Gitleaks 8.30.1 with no leaks;
+- added lines passed the internal-runtime marker scan; the three deliberate
+  privacy-fixture lines were reviewed; generated assets passed embedded-string
+  and metadata checks.
+
+These are local candidate results, not proof that remote CI or the public
+release gates have passed.
+
+## Gate Status
+
+1. **Local engineering gate: passed.** Remote CI and security workflows remain
+   pending until the candidate branch is pushed.
+2. **Local privacy gate: passed.** It must be repeated against the exact pushed
+   commit before merge or release.
+3. **Maintainer feedback gate: pending.** An invitation is not a qualified
+   conversation; a concrete maintainer response is required.
+4. **Owner gate: partially approved.** Creating the public candidate PR and
+   maintainer outreach is approved. Publishing the release or distribution copy
+   still requires a separate final review.
+
+The candidate is ready for a public review PR. It is not ready for a `v0.6.0`
+release.

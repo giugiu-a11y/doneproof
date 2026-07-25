@@ -10,7 +10,12 @@ from typing import Any
 from urllib.parse import quote
 
 from . import __version__
-from .capture import build_captured_receipt, run_command, validate_requested_file
+from .capture import (
+    build_captured_receipt,
+    resolve_changed_files,
+    run_command,
+    validate_requested_file,
+)
 from .doctor import run_doctor
 from .git import changed_files, git_diff_summary
 from .policy import init_project, load_policy
@@ -379,7 +384,8 @@ def _capture(args: argparse.Namespace) -> int:
         # Refuse to execute when a privacy-safe Git-scoped receipt cannot be produced.
         for requested_file in args.changed_file:
             validate_requested_file(requested_file)
-        git_diff_summary(root, paths=list(args.changed_file) or None, mode=args.git_mode)
+        captured_files = resolve_changed_files(root, list(args.changed_file))
+        git_diff_summary(root, paths=captured_files, mode=args.git_mode)
         run = run_command(
             command,
             root=root,
@@ -391,7 +397,7 @@ def _capture(args: argparse.Namespace) -> int:
             summary=args.summary,
             command=command,
             run=run,
-            requested_files=list(args.changed_file),
+            requested_files=captured_files,
             git_mode=args.git_mode,
             risks=list(args.risk),
         )

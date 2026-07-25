@@ -177,6 +177,64 @@ def test_capture_refuses_private_file_before_running_command(tmp_path: Path) -> 
     assert not tmp_path.joinpath(".doneproof", "receipts", "latest.json").exists()
 
 
+def test_capture_refuses_clean_repo_before_running_command(tmp_path: Path) -> None:
+    _init_doneproof_repo(tmp_path)
+    marker = tmp_path / "command-ran.txt"
+
+    code = main(
+        [
+            "capture",
+            "--root",
+            str(tmp_path),
+            "--task",
+            "Must not run without a changed scope",
+            "--",
+            sys.executable,
+            "-c",
+            f"from pathlib import Path; Path({str(marker)!r}).write_text('ran')",
+        ]
+    )
+
+    assert code == 2
+    assert not marker.exists()
+    assert not tmp_path.joinpath(".doneproof", "receipts", "latest.json").exists()
+
+
+def test_capture_redacts_windows_home_path_before_display_or_persistence(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    _init_doneproof_repo(tmp_path)
+    tmp_path.joinpath("README.md").write_text("# Example\n\nSafe\n", encoding="utf-8")
+    local_path = r"C:\Users\alice\private-project\receipt.txt"
+
+    code = main(
+        [
+            "capture",
+            "--root",
+            str(tmp_path),
+            "--task",
+            "Verify cross-platform path redaction",
+            "--changed-file",
+            "README.md",
+            "--",
+            sys.executable,
+            "-c",
+            f"print({local_path!r})",
+        ]
+    )
+
+    assert code == 0
+    terminal = capsys.readouterr().out
+    receipt_text = tmp_path.joinpath(
+        ".doneproof", "receipts", "latest.json"
+    ).read_text(encoding="utf-8")
+    assert local_path not in terminal
+    assert local_path not in receipt_text
+    assert "[LOCAL_PATH]" in terminal
+    assert "[LOCAL_PATH]" in receipt_text
+
+
 def test_capture_digest_matches_only_the_public_changed_files(tmp_path: Path) -> None:
     _init_doneproof_repo(tmp_path)
     _commit_script(tmp_path, "secrets.txt", "private baseline\n")

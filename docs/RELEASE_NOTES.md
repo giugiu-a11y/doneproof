@@ -2,6 +2,41 @@
 
 ## Unreleased
 
+### Added
+
+- Added `doneproof capture`, which executes a command without a shell and writes
+  a Captured Proof object containing the observed exit code, measured duration,
+  sanitized-output digest, selected Git-scope digest, and proof integrity
+  digest.
+- Added receipt and JSON Schema validation for Captured Proof.
+- Added an isolated real-run demonstration plus animated, static, and accessible
+  visual artifacts.
+
+### Safety
+
+- Raw command output and Git diff content are not stored in the receipt.
+- Known credential shapes and Unix and Windows home paths are masked before
+  command output is displayed or hashed.
+- Capture refuses to execute when it cannot first resolve a privacy-safe changed
+  Git scope.
+- Commands run as argument vectors without a shell, and timed-out process groups
+  are terminated.
+
+### Trust boundary
+
+- Captured Proof is tamper-evident inside a receipt; it is not signed or remotely
+  attested.
+- It records what ran, not whether the selected check was sufficient or whether
+  the code is semantically correct. Human review remains required.
+
+### Verified for the release candidate
+
+- The isolated capture, receipt validation, and schema validation flow completed
+  in `0.42` seconds on the development machine; this is a measured run, not a
+  cross-machine performance claim.
+
+### Changed
+
 - Pinned every external GitHub Action used by CI, security, smoke tests, and the copyable PR-comment example to a verified full commit SHA.
 - Upgraded Checkout to v7 and added a regression test that rejects mutable Action references.
 

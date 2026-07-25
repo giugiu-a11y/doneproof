@@ -38,6 +38,9 @@ _KNOWN_CREDENTIAL = re.compile(
 _LOCAL_HOME_PATH = re.compile(
     r"(?:/(?:Users|home)/[^/\s]+)(?:/[^\s'\";,)]*)?"
 )
+_WINDOWS_HOME_PATH = re.compile(
+    r"(?i)(?:[a-z]:\\Users\\[^\\\s]+)(?:\\[^\s'\";,)]*)?"
+)
 
 
 @dataclass(frozen=True)
@@ -107,6 +110,7 @@ def redact_text(text: str) -> tuple[str, int]:
     sanitized = _BEARER.sub(replace_prefixed, sanitized)
     sanitized = _KNOWN_CREDENTIAL.sub(replace_token, sanitized)
     sanitized = _LOCAL_HOME_PATH.sub(replace_local_path, sanitized)
+    sanitized = _WINDOWS_HOME_PATH.sub(replace_local_path, sanitized)
     return sanitized, count
 
 
