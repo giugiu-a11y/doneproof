@@ -88,8 +88,9 @@ One extra receipt is cheaper than a cleanup cycle caused by false confidence.
 
 ## Public Product Principle
 
-DoneProof should stay small. Its job is not to become the whole agent operating system.
+Captured Proof should stay narrow. Its job is not to become the whole agent
+operating system.
 
-Its job is to make one rule easy to adopt:
+Its job is to make one workflow easy to adopt:
 
-> No proof, no done.
+> Run the check. Inspect the evidence. Keep human review.

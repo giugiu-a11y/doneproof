@@ -121,7 +121,7 @@ def build_frames(result: DemoResult) -> list[Image.Image]:
                 ("$ doneproof capture --task \"Check this change\" -- \\", "prompt"),
                 ("    git diff --check", "prompt"),
                 ("", "muted"),
-                ("No proof, no done.", "ok"),
+                ("Evidence first. Human review remains final.", "ok"),
             ],
         ),
         render_frame(
@@ -136,7 +136,7 @@ def build_frames(result: DemoResult) -> list[Image.Image]:
                 ),
                 ("Receipt: .doneproof/receipts/latest.json", "muted"),
                 ("Review state: awaiting_review", "warn"),
-                ("DoneProof recorded the run; nobody typed “passed”.", "accent"),
+                ("The CLI recorded the run; nobody typed “passed”.", "accent"),
             ],
         ),
         render_frame(
@@ -182,7 +182,7 @@ def write_svg(result: DemoResult) -> None:
         (f"integrity  {_short_digest(proof['integrity_sha256'])}", MUTED),
         ("check: PASS · schema: PASS · report: PASS", GREEN),
         (f"Real isolated demo: {result.elapsed_seconds:.2f}s", CYAN),
-        ("Shareable receipt → human review. No proof, no done.", TEXT),
+        ("Shareable receipt → human review remains final.", TEXT),
     ]
     text = "\n".join(
         (
@@ -196,7 +196,7 @@ def write_svg(result: DemoResult) -> None:
         (
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{WIDTH}" height="{HEIGHT}" '
             f'viewBox="0 0 {WIDTH} {HEIGHT}" role="img" '
-            'aria-label="DoneProof Captured Proof demonstration">\n'
+            'aria-label="Captured Proof demonstration">\n'
             f'  <rect width="{WIDTH}" height="{HEIGHT}" fill="{BACKGROUND}"/>\n'
             '  <rect x="32" y="30" width="1036" height="560" rx="14" '
             f'fill="{WINDOW}" stroke="{BORDER}"/>\n'
@@ -234,7 +234,7 @@ def write_social_preview(result: DemoResult) -> None:
     )
     draw.text(
         (76, 74),
-        "DONEPROOF  ·  LOCAL CHECK EVIDENCE",
+        "UNRELEASED CANDIDATE  ·  LOCAL CHECK EVIDENCE",
         fill="#83d6ff",
         font=display_small,
     )

@@ -1,10 +1,12 @@
 # Launch Copy
 
-Status: prepared for gated release; not approved or posted.
+Status: stage-two draft; not approved or posted.
 
 Do not publish this copy until the release gates in `docs/LAUNCH_PLAN.md` are
-closed. Start with one channel, answer real objections, and revise only from
-observed feedback.
+closed, including the product-name decision. `DoneProof` remains only the
+current repository, package, and CLI compatibility identifier during
+validation. Start with one channel, answer real objections, and revise only
+from observed feedback.
 
 ## Message Contract
 
@@ -27,17 +29,19 @@ current Git change.
 It records observed evidence. It does not replace code review, security review,
 or judgment.
 
-No proof, no done.
-
 https://github.com/giugiu-a11y/doneproof
+
+Try it on one real change and tell me: did the receipt reduce review work, make
+no difference, or add ceremony?
 
 ## LinkedIn
 
 AI coding agents can produce convincing summaries before a reviewer has enough
 evidence to trust the change.
 
-Captured Proof, inside DoneProof, runs one local check and creates a shareable
-receipt tied to the current Git change. The receipt records:
+Captured Proof runs one local check and creates a shareable receipt tied to the
+current Git change. The current candidate is distributed from the `doneproof`
+repository and CLI while the workflow is being validated. The receipt records:
 
 - the exact command;
 - its observed exit code and duration;
@@ -45,21 +49,22 @@ receipt tied to the current Git change. The receipt records:
 - privacy-safe digests for output and Git scope;
 - an explicit `awaiting_review` status.
 
-That boundary matters: DoneProof records what ran. It does not claim the code is
-correct, secure, or approved.
+That boundary matters: Captured Proof records what ran. It does not claim the
+code is correct, secure, or approved.
 
 The goal is a smaller review gap between “the agent says it passed” and “I can
 inspect the evidence.”
 
-No proof, no done.
-
 https://github.com/giugiu-a11y/doneproof
+
+I am looking for maintainers willing to try it on one public-safe change and
+report whether it reduced review work, made no difference, or added ceremony.
 
 ## Hacker News
 
 Preferred title:
 
-> Show HN: DoneProof — receipts for checks run on AI code changes
+> Show HN: Captured Proof — local check evidence for AI code changes
 
 Post:
 
@@ -90,8 +95,8 @@ It does not replace CI or human review. It makes one check easier to inspect and
 share.
 
 If you maintain a repository that accepts agent-authored changes, I would value
-feedback on whether this receipt would reduce review ambiguity in a real pull
-request.
+one concrete test: run it on a public-safe change and report whether the receipt
+reduced review work, made no difference, or added ceremony.
 
 Repo: https://github.com/giugiu-a11y/doneproof
 
@@ -124,17 +129,18 @@ receipt before sharing because no redactor can recognize every secret format.
 If someone asks “Why is the repository named DoneProof?”:
 
 ```text
-DoneProof is the existing project name. Captured Proof is the specific
-mechanism: run one check and receive a reviewable receipt tied to the Git
-change. We are testing the mechanism before considering any broader brand
-architecture.
+`DoneProof` is the current repository, package, and CLI compatibility name.
+Captured Proof is the mechanism under validation: run one check and receive a
+reviewable receipt tied to the Git change. We are deliberately not expanding
+the repository name into a broader brand before maintainers repeat the
+workflow.
 ```
 
 ## Product Boundary
 
-DoneProof does not manage session selection, cross-session continuity, or memory
-promotion. Continuity Loop and Memory Boundary are independent products with
-their own categories and first-use paths.
+Captured Proof does not manage session selection, cross-session continuity, or
+memory promotion. Continuity Loop and Memory Boundary are independent products
+with their own categories and first-use paths.
 
 Do not present the three projects as a system, suite, platform, family, bundle,
 or required sequence.
