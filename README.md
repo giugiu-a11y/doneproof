@@ -412,6 +412,6 @@ The `main` branch is checked by CI and by an Action Smoke workflow that runs the
 
 Captured Proof `v0.6` is an unreleased candidate in public draft review. A clean
 demonstration and candidate privacy review exist. Release remains blocked on
-qualified maintainer pain confirmation, one external real-change receipt, one
-repeat use, a final exact-release privacy and engineering rerun, and explicit
-owner approval.
+at least two qualified maintainer pain confirmations, one external real-change
+receipt, one repeat use, a final exact-release privacy and engineering rerun,
+and explicit owner approval.
