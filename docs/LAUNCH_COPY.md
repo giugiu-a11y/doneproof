@@ -1,30 +1,33 @@
-# Launch Copy
+# Factbound Run Launch Copy
 
 Status: stage-two draft; not approved or posted.
 
 Do not publish this copy until the release gates in `docs/LAUNCH_PLAN.md` are
 closed, including the external-adoption, exact-release privacy, and owner
-approval gates. `DoneProof` remains the current repository, package, and CLI
-compatibility identifier. It is not an umbrella brand. Start with one channel,
-answer real objections, and revise only from observed feedback.
+approval gates. **Factbound Run** is the proposed product identity; `DoneProof`
+remains the current repository, package, and CLI compatibility identifier.
+Start with one channel, answer real objections, and revise only from observed
+feedback.
 
 ## Message Contract
 
-- Category: local check evidence for AI code changes.
-- Hook: Your agent says the check passed. Review what actually ran.
-- Promise: Run the check. Get a shareable receipt tied to the current Git
-  change.
+- Product: Factbound Run.
+- Category: review receipts for AI code changes.
+- Hook: The agent says it passed. Show the run.
+- Promise: Turn the check you already run into a shareable Review Receipt tied
+  to the current Git change.
 - Mechanism: Captured Proof connects one observed command result to the
   selected Git scope.
+- Object: Review Receipt.
 - Boundary: it records observed local evidence. It does not prove correctness,
   security, authorship, or approval.
 
 ## X
 
-Your agent says the check passed. Review what actually ran.
+The agent says it passed. Show the run.
 
-Captured Proof runs one local check and creates a shareable receipt tied to the
-current Git change.
+Factbound Run turns one local check into a shareable Review Receipt tied to the
+current Git change, through its Captured Proof mechanism.
 
 It records observed evidence. It does not replace code review, security review,
 or judgment.
@@ -39,9 +42,10 @@ no difference, or add ceremony?
 AI coding agents can produce convincing summaries before a reviewer has enough
 evidence to trust the change.
 
-Captured Proof runs one local check and creates a shareable receipt tied to the
-current Git change. The current candidate is distributed from the `doneproof`
-repository and CLI while the workflow is being validated. The receipt records:
+Factbound Run turns one local check into a shareable Review Receipt tied to the
+current Git change. Its Captured Proof mechanism is currently distributed from
+the `doneproof` repository and CLI while the workflow is being validated. The
+receipt records:
 
 - the exact command;
 - its observed exit code and duration;
@@ -64,16 +68,17 @@ report whether it reduced review work, made no difference, or added ceremony.
 
 Preferred title:
 
-> Show HN: Captured Proof — local check evidence for AI code changes
+> Show HN: Factbound Run — review receipts for AI code changes
 
 Post:
 
-I built Captured Proof after repeatedly seeing coding-agent handoffs that
+I built Factbound Run after repeatedly seeing coding-agent handoffs that
 sounded complete but did not make the executed check easy to review.
 
-`doneproof capture` runs one command without a shell and writes a receipt tied
-to the selected Git change. It records the observed exit code, duration, and
-privacy-safe digests without storing raw command output or Git diff content.
+Its Captured Proof mechanism runs one command without a shell and writes a
+Review Receipt tied to the selected Git change. It records the observed exit
+code, duration, and privacy-safe digests without storing raw command output or
+Git diff content.
 
 The successful review state is `awaiting_review`, not `done`.
 
@@ -87,9 +92,9 @@ Repo: https://github.com/giugiu-a11y/doneproof
 I am looking for maintainer feedback on a narrow problem: reviewing the check
 an AI coding agent says it ran.
 
-Captured Proof runs one local command and creates a receipt tied to the current
-Git change. The receipt contains the observed result and review state, while
-omitting raw output and diff content.
+Factbound Run uses Captured Proof to turn one local command into a Review
+Receipt tied to the current Git change. The receipt contains the observed
+result and review state, while omitting raw output and diff content.
 
 It does not replace CI or human review. It makes one check easier to inspect and
 share.
@@ -130,20 +135,21 @@ If someone asks “Why is the repository named DoneProof?”:
 
 ```text
 `DoneProof` is the current repository, package, and CLI compatibility name.
-Captured Proof is the mechanism under validation: run one check and receive a
-reviewable receipt tied to the Git change. We are deliberately not expanding
-the repository name into a broader brand before maintainers repeat the
-workflow.
+Factbound Run is the proposed product identity. Captured Proof is the mechanism:
+run one check and receive a Review Receipt tied to the Git change. The public
+identifiers stay stable until the workflow earns external repeat use and one
+atomic migration is explicitly approved.
 ```
 
 ## Product Boundary
 
-Captured Proof does not manage session selection, cross-session continuity, or
-memory promotion. Continuity Loop and Memory Boundary are independent products
-with their own categories and first-use paths.
+Factbound Run does not manage session selection, cross-session continuity, or
+memory promotion. Factbound Continuity and Factbound Memory remain private;
+Continuity Loop and Memory Boundary are their mechanisms.
 
-Do not present the three projects as a system, suite, platform, family, bundle,
-or required sequence.
+Do not present the two private products as launched, integrated, public, or
+required companions to Factbound Run. Factbound is a naming architecture, not
+evidence that a three-product suite has shipped.
 
 ## Manual Posting Checklist
 

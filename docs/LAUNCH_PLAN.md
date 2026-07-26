@@ -1,12 +1,13 @@
-# Launch Plan
+# Factbound Run Launch Plan
 
 Status: release candidate in public draft review; market validation active;
 release and distribution not yet approved.
 
 ## Goal
 
-Prove that Captured Proof reduces review ambiguity for maintainers handling
-AI-authored code changes. The goal is external use, not impressions.
+Prove that a Factbound Run **Review Receipt**, created through **Captured
+Proof**, reduces review ambiguity for maintainers handling AI-authored code
+changes. The goal is external use, not impressions.
 
 ## Primary User
 
@@ -21,12 +22,18 @@ maintainer workflow is proven.
 
 ## Positioning
 
-Category: local check evidence for AI code changes.
+Product: **Factbound Run**.
+
+Category: **review receipts for AI code changes**.
+
+Hook:
+
+> **The agent says it passed. Show the run.**
 
 Core promise:
 
-> Run the check you already trust. Review what actually ran and which current
-> Git change it covered.
+> Turn the check you already run into a shareable Review Receipt tied to the
+> current Git change.
 
 The entry wedge is deliberately narrow: one existing command becomes a
 reviewable receipt without requiring an account, agent integration, policy
@@ -67,9 +74,9 @@ The public demonstration must show this loop in less than 60 seconds.
    effect, missing evidence, competitive alternative, and repeat intent.
 6. Confirm one repeat use without coaching.
 7. Repeat the privacy and release review on the exact candidate.
-8. Keep the approved naming architecture frozen: `DoneProof` as the current
-   compatibility identifier, `Captured Proof` as the mechanism, and no
-   umbrella brand.
+8. Keep the approved naming architecture frozen: **Factbound Run** as the
+   product, **Captured Proof** as the mechanism, **Review Receipt** as the
+   shareable object, and `DoneProof` as the current compatibility identifier.
 9. Publish `v0.6.0` only after owner approval.
 10. Use one public channel first, learn from replies, then adapt the next
    channel.
@@ -109,23 +116,28 @@ same-category public repository collision. It therefore remains the current
 repository, package, and CLI compatibility identifier, not a future master
 brand.
 
+- The working master brand is **Factbound**: agent work that stays bound to
+  evidence.
+- The public product is **Factbound Run**. The portfolio category is evidence
+  controls for AI coding agents; the acquisition category remains the narrower
+  review receipts for AI code changes.
 - Keep the current identifiers stable through validation so the public
   candidate remains reproducible.
-- Lead with the category `Local check evidence for AI code changes` and the
-  mechanism `Captured Proof`, not the repository name.
-- Do not create an umbrella brand or reopen a rename before external repeat
-  use proves that a broader architecture is needed.
-- If evidence later justifies a replacement, it must pass exact-name searches
-  across developer repositories, package registries, current web products, and
-  relevant domains before an atomic migration is planned.
+- Lead with Factbound Run, the Review Receipt object, and the Captured Proof
+  mechanism, not the compatibility repository name.
+- Do not rename the repository, package, CLI, schema, default branch, or release
+  artifacts before external validation and explicit approval of one atomic
+  migration.
 - Availability screening is not trademark or legal clearance.
 
 ## Scope Discipline
 
-- Captured Proof is the named acquisition mechanism inside DoneProof.
+- Factbound Run is the product; Captured Proof is its acquisition mechanism;
+  Review Receipt is the object users create and share.
 - Do not partially rename the repository, package, CLI, documentation, or
   release artifacts before the owner approves one atomic migration.
-- Continuity Loop and Memory Boundary are independent products.
+- Factbound Continuity and Factbound Memory remain private. Continuity Loop and
+  Memory Boundary are their named mechanisms.
 - Do not create another public repository, dashboard, telemetry layer, hosted
   service, or paid infrastructure to compensate for missing adoption.
 

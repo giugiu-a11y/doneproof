@@ -1,16 +1,21 @@
-# DoneProof
+# Factbound Run
 
-Local check evidence for AI code changes.
+Review receipts for AI code changes.
 
-Your agent says the check passed. Review what actually ran.
+**The agent says it passed. Show the run.**
 
-**Captured Proof** runs your existing check locally and creates a shareable
-receipt tied to the current Git change. The first receipt needs no account,
-agent integration, policy file, or CI change.
+**Captured Proof** turns the check you already run into a shareable **Review
+Receipt** tied to the current Git change. Create the first one in under 60
+seconds, locally, with no account, agent integration, policy file, or CI change.
 
 It records locally observed execution evidence. It does not prove that the code
 is correct, secure, complete, independently attested, signed, or safe to merge.
 Human review remains final.
+
+> **Compatibility during candidate review:** the repository, Python package,
+> CLI, schema identifiers, and stable release remain `doneproof`. Factbound Run
+> is the proposed product identity; this draft does not rename or release those
+> public surfaces.
 
 ![Captured Proof: command, Git scope, and reviewable receipt](docs/assets/doneproof-demo.gif)
 
@@ -20,7 +25,7 @@ Human review remains final.
 [![Release](https://img.shields.io/github/v/release/giugiu-a11y/doneproof)](https://github.com/giugiu-a11y/doneproof/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-## Try Captured Proof
+## Create a Review Receipt
 
 The current public release is still `v0.5.0`. Captured Proof is an unreleased
 `v0.6` candidate being reviewed on this branch.
@@ -34,7 +39,7 @@ doneproof capture --task "Check this change" -- git diff --check
 doneproof report
 ```
 
-DoneProof automatically selects the current privacy-safe changed files.
+Factbound Run automatically selects the current privacy-safe changed files.
 `git diff --check` is a universal first check for whitespace errors. Replace it
 with the repository's real test, lint, build, or verification command when
 evaluating the code itself.
@@ -56,7 +61,7 @@ A passing command alone is engineering evidence, not product validation.
 ## What You Get
 
 - a small CLI for receipts, checks, reports, and git diff evidence;
-- a Captured Proof candidate that runs a real command and binds its exit code,
+- the **Captured Proof** mechanism, which runs a real command and binds its exit code,
   duration, sanitized output digest, and Git scope into the receipt;
 - a composite GitHub Action for pull request gates;
 - integration templates for Codex, Claude Code, Cursor, OpenCode, OpenClaw-style agents, and Hermes-style orchestrators;
@@ -66,7 +71,7 @@ See the visual walkthrough in [docs/DEMO.md](docs/DEMO.md).
 
 ## Why It Exists
 
-DoneProof comes from real multi-agent work where the expensive failures were not model intelligence failures.
+Factbound Run comes from real multi-agent work where the expensive failures were not model intelligence failures.
 
 They were operations failures:
 
@@ -76,7 +81,8 @@ They were operations failures:
 - a task was reported as finished while review still had to happen;
 - the human had to discover missing tests, missing files, or unclear risk after the fact.
 
-DoneProof turns those lessons into a small local rule: every agent delivery needs a receipt with files, commands, evidence, and risk.
+Factbound Run turns those lessons into a small local rule: every agent delivery
+needs a Review Receipt with files, commands, evidence, and risk.
 
 ## The Problem
 
@@ -92,7 +98,7 @@ But did the agent:
 - mention the risks?
 - avoid declaring victory before review?
 
-DoneProof adds one rule:
+Factbound Run adds one rule:
 
 > If there is no receipt, the work is not ready.
 
