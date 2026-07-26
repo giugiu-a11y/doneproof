@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from dataclasses import dataclass, field
@@ -52,11 +53,12 @@ def build_receipt(
     status: str,
     summary: str,
     changed_files: list[str],
-    commands: list[dict[str, str]],
-    evidence: list[dict[str, str]],
+    commands: list[dict[str, Any]],
+    evidence: list[dict[str, Any]],
     risks: list[str],
+    captured_proof: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    return {
+    receipt: dict[str, Any] = {
         "schema_version": "1.0",
         "created_at": datetime.now(timezone.utc).isoformat(),
         "task": task,
@@ -67,6 +69,22 @@ def build_receipt(
         "evidence": evidence,
         "risks": risks,
     }
+    if captured_proof is not None:
+        receipt["captured_proof"] = captured_proof
+    return receipt
+
+
+def captured_proof_integrity(proof: dict[str, Any]) -> str:
+    """Return a stable integrity digest for a captured-proof object."""
+
+    canonical = {key: value for key, value in proof.items() if key != "integrity_sha256"}
+    encoded = json.dumps(
+        canonical,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+    ).encode("utf-8")
+    return f"sha256:{hashlib.sha256(encoded).hexdigest()}"
 
 
 def validate_receipt(
@@ -120,6 +138,7 @@ def validate_receipt(
     _validate_commands(receipt.get("commands", []), findings)
     _validate_evidence(receipt.get("evidence", []), findings)
     _validate_risks(receipt.get("risks", []), findings)
+    _validate_captured_proof(receipt, findings)
     _validate_changed_files(
         receipt.get("changed_files", []),
         receipt_path.parent,
@@ -202,6 +221,167 @@ def _validate_risks(risks: Any, findings: list[Finding]) -> None:
     for index, risk in enumerate(risks, start=1):
         if not isinstance(risk, str):
             findings.append(Finding("error", f"risks[{index}] must be a string"))
+
+
+def _validate_captured_proof(receipt: dict[str, Any], findings: list[Finding]) -> None:
+    proof = receipt.get("captured_proof")
+    if proof is None:
+        return
+    if not isinstance(proof, dict):
+        findings.append(Finding("error", "captured_proof must be an object"))
+        return
+
+    required = {
+        "version",
+        "captured_at",
+        "command",
+        "result",
+        "exit_code",
+        "duration_ms",
+        "timed_out",
+        "output",
+        "command_redactions",
+        "git_scope",
+        "environment",
+        "integrity_sha256",
+    }
+    for field_name in sorted(required - set(proof)):
+        findings.append(Finding("error", f"captured_proof is missing {field_name}"))
+    if required - set(proof):
+        return
+
+    result = proof.get("result")
+    exit_code = proof.get("exit_code")
+    duration_ms = proof.get("duration_ms")
+    if proof.get("version") != "1.0":
+        findings.append(Finding("error", "captured_proof version must be 1.0"))
+    try:
+        captured_at = datetime.fromisoformat(str(proof.get("captured_at")).replace("Z", "+00:00"))
+        if captured_at.tzinfo is None or captured_at.utcoffset() is None:
+            raise ValueError
+    except ValueError:
+        findings.append(
+            Finding("error", "captured_proof captured_at must be a timezone-aware timestamp")
+        )
+    if not str(proof.get("command", "")).strip():
+        findings.append(Finding("error", "captured_proof command must not be empty"))
+    if result not in {"passed", "failed"}:
+        findings.append(Finding("error", "captured_proof result must be passed or failed"))
+    if not isinstance(exit_code, int) or isinstance(exit_code, bool):
+        findings.append(Finding("error", "captured_proof exit_code must be an integer"))
+    elif result != ("passed" if exit_code == 0 else "failed"):
+        findings.append(Finding("error", "captured_proof result does not match exit_code"))
+    if not isinstance(duration_ms, int) or isinstance(duration_ms, bool) or duration_ms < 0:
+        findings.append(Finding("error", "captured_proof duration_ms must be >= 0"))
+    if not isinstance(proof.get("timed_out"), bool):
+        findings.append(Finding("error", "captured_proof timed_out must be a boolean"))
+    elif proof.get("timed_out") is True and exit_code != 124:
+        findings.append(Finding("error", "captured_proof timed_out requires exit_code 124"))
+    if (
+        not isinstance(proof.get("command_redactions"), int)
+        or isinstance(proof.get("command_redactions"), bool)
+        or proof.get("command_redactions", -1) < 0
+    ):
+        findings.append(Finding("error", "captured_proof command_redactions must be >= 0"))
+
+    _validate_captured_output(proof.get("output"), findings)
+    _validate_git_scope(proof.get("git_scope"), receipt.get("changed_files"), findings)
+    _validate_capture_environment(proof.get("environment"), findings)
+
+    integrity = proof.get("integrity_sha256")
+    if not _is_sha256(integrity):
+        findings.append(Finding("error", "captured_proof integrity_sha256 is invalid"))
+    elif integrity != captured_proof_integrity(proof):
+        findings.append(Finding("error", "captured_proof integrity check failed"))
+
+    captured_commands = [
+        command
+        for command in receipt.get("commands", [])
+        if isinstance(command, dict) and command.get("captured") is True
+    ]
+    if len(captured_commands) != 1:
+        findings.append(Finding("error", "captured_proof requires exactly one captured command"))
+    elif isinstance(exit_code, int):
+        command = captured_commands[0]
+        if command.get("exit_code") != exit_code:
+            findings.append(Finding("error", "captured command exit_code does not match proof"))
+        if command.get("status") != result:
+            findings.append(Finding("error", "captured command status does not match proof"))
+        if command.get("cmd") != proof.get("command"):
+            findings.append(Finding("error", "captured command text does not match proof"))
+        if command.get("duration_ms") != duration_ms:
+            findings.append(Finding("error", "captured command duration does not match proof"))
+        output = proof.get("output")
+        if isinstance(output, dict) and command.get("output_sha256") != output.get("sha256"):
+            findings.append(Finding("error", "captured command output digest does not match proof"))
+
+    expected_status = "awaiting_review" if result == "passed" else "failed"
+    if receipt.get("status") != expected_status:
+        findings.append(Finding("error", "receipt status does not match captured proof"))
+
+
+def _validate_captured_output(output: Any, findings: list[Finding]) -> None:
+    if not isinstance(output, dict):
+        findings.append(Finding("error", "captured_proof output must be an object"))
+        return
+    if not _is_sha256(output.get("sha256")):
+        findings.append(Finding("error", "captured_proof output sha256 is invalid"))
+    for field_name in ("bytes", "lines", "redactions"):
+        value = output.get(field_name)
+        if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+            findings.append(Finding("error", f"captured_proof output {field_name} must be >= 0"))
+    if output.get("content_stored") is not False:
+        findings.append(Finding("error", "captured_proof must not store raw output content"))
+    if output.get("redaction_status") not in {"not_detected", "known_patterns_masked"}:
+        findings.append(Finding("error", "captured_proof redaction_status is invalid"))
+    redactions = output.get("redactions")
+    redaction_status = output.get("redaction_status")
+    if isinstance(redactions, int) and not isinstance(redactions, bool):
+        expected = "known_patterns_masked" if redactions else "not_detected"
+        if redaction_status != expected:
+            findings.append(
+                Finding("error", "captured_proof redaction_status does not match redactions")
+            )
+
+
+def _validate_git_scope(
+    git_scope: Any,
+    receipt_files: Any,
+    findings: list[Finding],
+) -> None:
+    if not isinstance(git_scope, dict):
+        findings.append(Finding("error", "captured_proof git_scope must be an object"))
+        return
+    if git_scope.get("mode") not in {"all", "staged", "unstaged", "untracked"}:
+        findings.append(Finding("error", "captured_proof git_scope mode is invalid"))
+    if not _is_sha256(git_scope.get("sha256")):
+        findings.append(Finding("error", "captured_proof git_scope sha256 is invalid"))
+    if git_scope.get("content_stored") is not False:
+        findings.append(Finding("error", "captured_proof must not store git diff content"))
+    if git_scope.get("changed_files") != receipt_files:
+        findings.append(Finding("error", "captured_proof git scope does not match changed_files"))
+
+
+def _validate_capture_environment(environment: Any, findings: list[Finding]) -> None:
+    if not isinstance(environment, dict):
+        findings.append(Finding("error", "captured_proof environment must be an object"))
+        return
+    allowed = {"os", "architecture", "python"}
+    extra = set(environment) - allowed
+    if extra:
+        findings.append(
+            Finding(
+                "error",
+                f"captured_proof environment contains unsafe field(s): {', '.join(sorted(extra))}",
+            )
+        )
+    for field_name in allowed:
+        if not str(environment.get(field_name, "")).strip():
+            findings.append(Finding("error", f"captured_proof environment is missing {field_name}"))
+
+
+def _is_sha256(value: Any) -> bool:
+    return isinstance(value, str) and re.fullmatch(r"sha256:[0-9a-f]{64}", value) is not None
 
 
 def _validate_changed_files(

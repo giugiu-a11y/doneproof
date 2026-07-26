@@ -2,12 +2,18 @@
 
 from __future__ import annotations
 
+import hashlib
+import os
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Protocol
 
 DiffMode = Literal["all", "staged", "unstaged", "untracked"]
+
+
+class _HashWriter(Protocol):
+    def update(self, data: bytes) -> object: ...
 
 
 @dataclass(frozen=True)
@@ -40,7 +46,7 @@ def changed_files(root: Path) -> list[str]:
     files: list[str] = []
     for raw_line in result.stdout.splitlines():
         path = _path_from_status_line(raw_line)
-        if path and _is_public_candidate(path):
+        if path and is_public_candidate(path):
             files.append(path)
     return sorted(dict.fromkeys(files))
 
@@ -83,6 +89,34 @@ def git_diff_summary(root: Path, paths: list[str] | None = None, mode: DiffMode 
     return _render_diff_summary(entries, filters, mode)
 
 
+def git_scope_digest(
+    root: Path,
+    paths: list[str] | None = None,
+    mode: DiffMode = "all",
+) -> str:
+    """Hash the actual Git patch and untracked bytes without persisting them."""
+
+    filters = [_normalize_filter_path(path) for path in paths or []]
+    unsafe_filters = [path for path in filters if not is_public_candidate(path)]
+    if unsafe_filters:
+        raise ValueError(
+            "Git scope cannot include private evidence paths: "
+            + ", ".join(unsafe_filters)
+        )
+    _ensure_git_repo(root)
+    if mode not in {"all", "staged", "unstaged", "untracked"}:
+        raise ValueError(f"Unsupported git diff mode: {mode}")
+
+    hasher = hashlib.sha256()
+    if mode in {"all", "staged"}:
+        _hash_git_patch(hasher, root, "staged", filters, cached=True)
+    if mode in {"all", "unstaged"}:
+        _hash_git_patch(hasher, root, "unstaged", filters, cached=False)
+    if mode in {"all", "untracked"}:
+        _hash_untracked_files(hasher, root, filters)
+    return f"sha256:{hasher.hexdigest()}"
+
+
 def _path_from_status_line(line: str) -> str:
     if len(line) < 4:
         return ""
@@ -92,8 +126,11 @@ def _path_from_status_line(line: str) -> str:
     return path.strip('"')
 
 
-def _is_public_candidate(path: str) -> bool:
+def is_public_candidate(path: str) -> bool:
+    """Return whether a path is safe to include in public-facing evidence."""
+
     blocked_prefixes = (
+        ".doneproof/receipts/",
         ".git/",
         ".pytest_cache/",
         ".ruff_cache/",
@@ -103,7 +140,6 @@ def _is_public_candidate(path: str) -> bool:
         "ACTIVE_VERSION.json",
         "PROJECT_STATUS.md",
         "AGENTS.md",
-        ".doneproof/receipts/latest.json",
     }
     name = Path(path).name
     blocked_suffixes = (".pem", ".key", ".p12", ".pfx")
@@ -168,7 +204,7 @@ def _numstat_entries(
             continue
         additions, deletions, path = parts
         path = path.strip('"')
-        if _is_public_candidate(path):
+        if is_public_candidate(path):
             entries.append(
                 DiffSummaryEntry(
                     section=section,
@@ -178,6 +214,84 @@ def _numstat_entries(
                 )
             )
     return entries
+
+
+def _hash_git_patch(
+    hasher: _HashWriter,
+    root: Path,
+    section: str,
+    filters: list[str],
+    *,
+    cached: bool,
+) -> None:
+    command = [
+        "git",
+        "-C",
+        str(root),
+        "diff",
+        "--binary",
+        "--full-index",
+        "--no-ext-diff",
+        "--no-textconv",
+    ]
+    if cached:
+        command.append("--cached")
+    command.extend(["--", *filters])
+    try:
+        result = subprocess.run(command, check=False, capture_output=True)
+    except OSError as exc:
+        raise ValueError("git executable is not available") from exc
+    if result.returncode != 0:
+        raise ValueError(f"Could not read {section} Git scope")
+    _hash_section(hasher, section, result.stdout)
+
+
+def _hash_untracked_files(
+    hasher: _HashWriter,
+    root: Path,
+    filters: list[str],
+) -> None:
+    try:
+        result = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(root),
+                "ls-files",
+                "--others",
+                "--exclude-standard",
+                "-z",
+                "--",
+                *filters,
+            ],
+            check=False,
+            capture_output=True,
+        )
+    except OSError as exc:
+        raise ValueError("git executable is not available") from exc
+    if result.returncode != 0:
+        raise ValueError("Could not read untracked Git scope")
+
+    for raw_path in sorted(item for item in result.stdout.split(b"\0") if item):
+        path = raw_path.decode("utf-8", errors="surrogateescape")
+        if not is_public_candidate(path):
+            continue
+        candidate = root / path
+        if candidate.is_symlink():
+            payload = os.readlink(candidate).encode("utf-8", errors="surrogateescape")
+        elif candidate.is_file():
+            payload = candidate.read_bytes()
+        else:
+            continue
+        _hash_section(hasher, f"untracked:{path}", payload)
+
+
+def _hash_section(hasher: _HashWriter, label: str, payload: bytes) -> None:
+    encoded_label = label.encode("utf-8")
+    hasher.update(len(encoded_label).to_bytes(4, "big"))
+    hasher.update(encoded_label)
+    hasher.update(len(payload).to_bytes(8, "big"))
+    hasher.update(payload)
 
 
 def _untracked_entries(root: Path, filters: list[str]) -> list[DiffSummaryEntry]:
@@ -195,7 +309,7 @@ def _untracked_entries(root: Path, filters: list[str]) -> list[DiffSummaryEntry]
 
     entries = []
     for path in result.stdout.splitlines():
-        if _is_public_candidate(path):
+        if is_public_candidate(path):
             entries.append(
                 DiffSummaryEntry(
                     section="untracked",

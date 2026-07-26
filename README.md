@@ -1,6 +1,23 @@
-# DoneProof
+# Factbound Run
 
-No proof, no done.
+Review receipts for AI code changes.
+
+**The agent says it passed. Show the run.**
+
+**Captured Proof** turns the check you already run into a shareable **Review
+Receipt** tied to the current Git change. Create the first one in under 60
+seconds, locally, with no account, agent integration, policy file, or CI change.
+
+It records locally observed execution evidence. It does not prove that the code
+is correct, secure, complete, independently attested, signed, or safe to merge.
+Human review remains final.
+
+> **Compatibility during candidate review:** the repository, Python package,
+> CLI, schema identifiers, and stable release remain `doneproof`. Factbound Run
+> is the proposed product identity; this draft does not rename or release those
+> public surfaces.
+
+![Captured Proof: command, Git scope, and reviewable receipt](docs/assets/doneproof-demo.gif)
 
 [![CI](https://github.com/giugiu-a11y/doneproof/actions/workflows/ci.yml/badge.svg)](https://github.com/giugiu-a11y/doneproof/actions/workflows/ci.yml)
 [![Action Smoke](https://github.com/giugiu-a11y/doneproof/actions/workflows/action-smoke.yml/badge.svg)](https://github.com/giugiu-a11y/doneproof/actions/workflows/action-smoke.yml)
@@ -8,15 +25,44 @@ No proof, no done.
 [![Release](https://img.shields.io/github/v/release/giugiu-a11y/doneproof)](https://github.com/giugiu-a11y/doneproof/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-DoneProof is a local verification layer for AI agent work. It makes agents produce a receipt before they claim work is ready.
+## Create a Review Receipt
 
-It does not replace review. It makes review harder to fake.
+The current public release is still `v0.5.0`. Captured Proof is an unreleased
+`v0.6` candidate being reviewed on this branch.
 
-![DoneProof terminal demo](docs/assets/doneproof-demo.gif)
+Requires Python 3.10+ and a Git repository with at least one current,
+privacy-safe change:
+
+```bash
+python3 -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@038498b4ca41926150e4952a7f3eabf1c0f371f0"
+doneproof capture --task "Check this change" -- git diff --check
+doneproof report
+```
+
+Factbound Run automatically selects the current privacy-safe changed files.
+`git diff --check` is a universal first check for whitespace errors. Replace it
+with the repository's real test, lint, build, or verification command when
+evaluating the code itself.
+
+### Close the loop on one real change
+
+Trying the candidate is useful only if it answers the maintainer question:
+did the receipt reduce review ambiguity, make no material difference, or add
+ceremony?
+
+Bring one public-safe, agent-authored change and its real check. You run the
+command in a repository you control; the trial can be guided or self-serve and
+requires no product integration. Use the
+[five-minute validation trial](docs/VALIDATION_TRIAL.md), then report the
+review outcome on
+[draft pull request #35](https://github.com/giugiu-a11y/doneproof/pull/35).
+A passing command alone is engineering evidence, not product validation.
 
 ## What You Get
 
 - a small CLI for receipts, checks, reports, and git diff evidence;
+- the **Captured Proof** mechanism, which runs a real command and binds its exit code,
+  duration, sanitized output digest, and Git scope into the receipt;
 - a composite GitHub Action for pull request gates;
 - integration templates for Codex, Claude Code, Cursor, OpenCode, OpenClaw-style agents, and Hermes-style orchestrators;
 - review language that blocks agents from claiming approval early.
@@ -25,7 +71,7 @@ See the visual walkthrough in [docs/DEMO.md](docs/DEMO.md).
 
 ## Why It Exists
 
-DoneProof comes from real multi-agent work where the expensive failures were not model intelligence failures.
+Factbound Run comes from real multi-agent work where the expensive failures were not model intelligence failures.
 
 They were operations failures:
 
@@ -35,7 +81,8 @@ They were operations failures:
 - a task was reported as finished while review still had to happen;
 - the human had to discover missing tests, missing files, or unclear risk after the fact.
 
-DoneProof turns those lessons into a small local rule: every agent delivery needs a receipt with files, commands, evidence, and risk.
+Factbound Run turns those lessons into a small local rule: every agent delivery
+needs a Review Receipt with files, commands, evidence, and risk.
 
 ## The Problem
 
@@ -51,24 +98,58 @@ But did the agent:
 - mention the risks?
 - avoid declaring victory before review?
 
-DoneProof adds one rule:
+Factbound Run adds one rule:
 
 > If there is no receipt, the work is not ready.
 
-## Quick Start
+## How Captured Proof Works
 
-Requires Python 3.10+.
+Run the complete isolated demo from a candidate checkout:
 
-Install from GitHub:
+```bash
+uv run --frozen --extra dev python scripts/captured_proof_demo.py
+```
+
+The script creates an isolated Git repository, changes a real file, auto-selects
+that file, runs `git diff --check` through `doneproof capture`, validates the
+receipt and JSON schema, and renders the human-readable report. The measured
+runtime printed by the script is evidence for that run, not a cross-machine
+performance guarantee.
+
+Use the command in your own changed repository:
+
+```bash
+doneproof capture --task "Run the repository tests" -- python3 -m pytest -q
+doneproof report
+```
+
+Captured Proof records:
+
+- the real exit code and duration;
+- a SHA-256 digest of sanitized command output, without storing raw output;
+- a SHA-256 digest of the selected Git patch and untracked file bytes, without
+  storing the diff;
+- safe environment metadata and an integrity digest over the proof object.
+
+Known secret patterns and local home paths are masked before output is shown or
+hashed. This reduces accidental leakage; it is not a guarantee that arbitrary
+secrets can never appear.
+
+The integrity digest detects accidental or unsophisticated mutation inside the
+receipt. It is not signed, remotely attested, or trustless. Human review of the
+actual code and diff remains required.
+
+The candidate acceptance criteria, trust boundary, and remaining release gates
+are documented in
+[docs/CAPTURED_PROOF_V0_6_REVIEW.md](docs/CAPTURED_PROOF_V0_6_REVIEW.md).
+
+## Manual Receipt Flow (v0.5.0)
+
+The stable release also supports manually authored receipts:
 
 ```bash
 python3 -m pip install --upgrade pip
 python3 -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@v0.5.0"
-```
-
-Use it inside a repository:
-
-```bash
 doneproof init
 doneproof new \
   --task "Add health check endpoint" \
@@ -78,11 +159,7 @@ doneproof new \
   --risk "Manual browser check not performed"
 doneproof check
 doneproof schema-check
-doneproof evidence git-diff
-doneproof evidence git-diff --mode staged
 doneproof report
-doneproof report --format json
-doneproof badge --format markdown
 ```
 
 For local development on DoneProof itself:
@@ -90,22 +167,21 @@ For local development on DoneProof itself:
 ```bash
 git clone https://github.com/giugiu-a11y/doneproof.git
 cd doneproof
-python3 -m pip install --upgrade pip
-python3 -m pip install -e ".[dev]"
+uv sync --extra dev --frozen
 make prepublish
 ```
 
 ## Demo
 
-Animated walkthrough:
+The animated walkthrough is generated from a real Captured Proof execution:
 
 ![DoneProof animated demo](docs/assets/doneproof-demo.gif)
 
-Full command transcript:
+Reproduction steps and the exact trust boundary:
 
 - [docs/DEMO.md](docs/DEMO.md)
 
-Passing receipt:
+The stable `v0.5.0` receipt fixtures remain available:
 
 ```bash
 doneproof check --receipt examples/receipts/passing.json
@@ -136,6 +212,7 @@ error: evidence needs at least 1 item(s)
 ```bash
 doneproof init               # create policy and agent templates
 doneproof new                # create a receipt draft
+doneproof capture            # run a command and write Captured Proof (v0.6 candidate)
 doneproof check              # validate a receipt
 doneproof schema-check       # validate receipt JSON shape against schema
 doneproof evidence git-diff  # write a sanitized git diff summary
@@ -159,6 +236,10 @@ doneproof doctor             # check local setup
 ```
 
 The git diff evidence helper stores file paths plus addition/deletion counts. It does not store full diff content by default. Reviewers should still inspect the actual diff before approval.
+
+Captured Proof goes further: its Git-scope digest is calculated from the actual
+selected patch and untracked file bytes. The receipt still stores only the
+digest and privacy-safe file list.
 
 ## Receipt Format
 
@@ -329,18 +410,14 @@ DoneProof is useful when:
 
 It is not a replacement for tests, CI, code review, product QA, or human approval. It is a lightweight pressure point that makes those steps easier to trust.
 
-## DoneProof System
-
-DoneProof is the evidence layer in a three-part local control system for AI coding agents:
-
-1. [DoneProof Continuity Loop](https://github.com/giugiu-a11y/doneproof-continuity-loop) sanitizes handoffs, selects the current session lineage, and detects stale re-entry before work resumes.
-2. DoneProof records changed files, commands, evidence, risks, and review status for the work itself.
-3. [DoneProof Memory Boundary](https://github.com/giugiu-a11y/doneproof-memory-boundary) keeps scratch notes private and promotes only evidence-backed state into shared handoffs.
-
-Each tool works independently. Together, they cover re-entry, execution proof, and durable shared context without replacing tests or human review.
-
 ## Release Status
 
 Current public release: `v0.5.0`.
 
 The `main` branch is checked by CI and by an Action Smoke workflow that runs the composite action against the passing receipt fixture.
+
+Captured Proof `v0.6` is an unreleased candidate in public draft review. A clean
+demonstration and candidate privacy review exist. Release remains blocked on
+at least two qualified maintainer pain confirmations, one external real-change
+receipt, one repeat use, a final exact-release privacy and engineering rerun,
+and explicit owner approval.

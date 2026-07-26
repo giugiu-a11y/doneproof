@@ -6,6 +6,7 @@ from pathlib import Path
 
 import yaml
 from jsonschema import Draft202012Validator
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -155,13 +156,22 @@ def test_release_readiness_docs_exist() -> None:
         ROOT / "docs" / "CODE_QUALITY_REVIEW.md",
         ROOT / "docs" / "ADVERSARIAL_REVIEW.md",
         ROOT / "scripts" / "prepublish_check.sh",
+        ROOT / "scripts" / "captured_proof_demo.py",
         ROOT / "scripts" / "render_demo_gif.py",
+        ROOT / "docs" / "DEMO.md",
         ROOT / "docs" / "assets" / "doneproof-demo.gif",
+        ROOT / "docs" / "assets" / "doneproof-demo-poster.png",
+        ROOT / "docs" / "assets" / "doneproof-social-preview.png",
         ROOT / "docs" / "assets" / "doneproof-demo.svg",
     ]
 
     for path in required:
         assert path.exists(), path
+
+    social_preview = ROOT / "docs" / "assets" / "doneproof-social-preview.png"
+    with Image.open(social_preview) as image:
+        assert image.size == (1280, 640)
+    assert social_preview.stat().st_size < 1_000_000
 
 
 def test_readme_explains_relevance() -> None:
@@ -170,6 +180,39 @@ def test_readme_explains_relevance() -> None:
     assert "Why It Exists" in readme
     assert "real multi-agent work" in readme
     assert "When It Helps" in readme
+
+
+def test_readme_has_one_coherent_captured_proof_activation_path() -> None:
+    readme = ROOT.joinpath("README.md").read_text(encoding="utf-8")
+
+    assert "# Factbound Run" in readme
+    assert "Review receipts for AI code changes." in readme
+    assert "**The agent says it passed. Show the run.**" in readme
+    assert (
+        "**Captured Proof** turns the check you already run into a shareable **Review"
+        in readme
+    )
+    assert (
+        "seconds, locally, with no account, agent integration, policy file, or CI change."
+        in readme
+    )
+    assert "**Review\nReceipt** tied to the current Git change" in readme
+    assert "repository, Python package,\n> CLI, schema identifiers" in readme
+    assert "It records locally observed execution evidence." in readme
+    assert (
+        'doneproof capture --task "Check this change" -- git diff --check'
+        in readme
+    )
+    assert (
+        "doneproof.git@038498b4ca41926150e4952a7f3eabf1c0f371f0"
+        in readme
+    )
+    assert "doneproof report" in readme
+    assert readme.index("## Create a Review Receipt") < readme.index(
+        "## Manual Receipt Flow (v0.5.0)"
+    )
+    assert "## DoneProof System" not in readme
+    assert "verify_agent_change.py" not in readme
 
 
 def test_agent_integration_guides_exist() -> None:

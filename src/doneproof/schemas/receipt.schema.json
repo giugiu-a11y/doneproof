@@ -57,6 +57,19 @@
           },
           "reason": {
             "type": "string"
+          },
+          "captured": {
+            "type": "boolean"
+          },
+          "exit_code": {
+            "type": "integer"
+          },
+          "duration_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "output_sha256": {
+            "$ref": "#/$defs/sha256"
           }
         }
       }
@@ -83,6 +96,146 @@
       "type": "array",
       "items": {
         "type": "string"
+      }
+    },
+    "captured_proof": {
+      "$ref": "#/$defs/capturedProof"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "capturedProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "captured_at",
+        "command",
+        "result",
+        "exit_code",
+        "duration_ms",
+        "timed_out",
+        "output",
+        "command_redactions",
+        "git_scope",
+        "environment",
+        "integrity_sha256"
+      ],
+      "properties": {
+        "version": {
+          "const": "1.0"
+        },
+        "captured_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "string",
+          "enum": ["passed", "failed"]
+        },
+        "exit_code": {
+          "type": "integer"
+        },
+        "duration_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "timed_out": {
+          "type": "boolean"
+        },
+        "output": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "sha256",
+            "bytes",
+            "lines",
+            "content_stored",
+            "redactions",
+            "redaction_status"
+          ],
+          "properties": {
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "lines": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "content_stored": {
+              "const": false
+            },
+            "redactions": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "redaction_status": {
+              "type": "string",
+              "enum": ["not_detected", "known_patterns_masked"]
+            }
+          }
+        },
+        "command_redactions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "git_scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "sha256", "changed_files", "content_stored"],
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": ["all", "staged", "unstaged", "untracked"]
+            },
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "changed_files": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "content_stored": {
+              "const": false
+            }
+          }
+        },
+        "environment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["os", "architecture", "python"],
+          "properties": {
+            "os": {
+              "type": "string",
+              "minLength": 1
+            },
+            "architecture": {
+              "type": "string",
+              "minLength": 1
+            },
+            "python": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "integrity_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
       }
     }
   }

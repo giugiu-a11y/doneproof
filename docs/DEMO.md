@@ -1,78 +1,83 @@
-# Demo
+# Captured Proof Demo
 
-The README uses `docs/assets/doneproof-demo.gif` as the primary visual demo.
+This demo is generated from the product's real execution path. It is not a
+concept animation with invented terminal output.
 
 - animated demo: `docs/assets/doneproof-demo.gif`
-- static fallback: `docs/assets/doneproof-demo.svg`
-- generator: `scripts/render_demo_gif.py`
+- static poster: `docs/assets/doneproof-demo-poster.png`
+- GitHub social preview: `docs/assets/doneproof-social-preview.png`
+- accessible SVG fallback: `docs/assets/doneproof-demo.svg`
+- real isolated flow: `scripts/captured_proof_demo.py`
+- real-run renderer: `scripts/render_demo_gif.py`
 
-The GIF walks through the strongest public flow:
+## What The Demo Proves
 
-1. initialize DoneProof in a repo;
-2. create a sanitized git diff evidence artifact;
-3. fail a weak receipt;
-4. pass a receipt with evidence;
-5. show the handoff in report form.
+The script:
 
-The same commands are listed below as a text reference.
+1. creates an isolated Git repository;
+2. initializes DoneProof and commits a clean baseline;
+3. changes `README.md`;
+4. auto-selects that changed file and runs `git diff --check` through
+   `doneproof capture`;
+5. writes a receipt with exit code, duration, sanitized output digest, and
+   content-derived Git-scope digest;
+6. runs `doneproof check`, `doneproof schema-check`, and `doneproof report`;
+7. fails unless every step succeeds.
 
-## Passing Receipt
+The script prints its measured runtime. Treat that as evidence for the
+individual run, not a universal performance benchmark. The generated animation
+shows the same real flow in `10.4` seconds.
+
+## Reproduce It
+
+Requires Python 3.10+ and `uv`.
 
 ```bash
-doneproof --version
-doneproof check --receipt examples/receipts/passing.json
+uv sync --extra dev --frozen
+uv run --frozen --extra dev python scripts/captured_proof_demo.py
 ```
 
-Expected:
+The final line must be:
 
 ```text
-DoneProof: PASS
+DEMO_RESULT=PASS
 ```
 
-## Failing Receipt
+Regenerate the visual assets from a fresh real run:
 
 ```bash
-doneproof check --receipt examples/receipts/failing.json
+uv run --frozen --extra dev python scripts/render_demo_gif.py
 ```
 
-Expected:
+The renderer prints the generated paths and measured execution time. Review the
+GIF, poster, and social preview visually after regeneration; file creation
+alone does not prove legibility. The approved social-preview alt text is:
+`Captured Proof: command, Git scope, and reviewable receipt`.
 
-```text
-DoneProof: FAIL
-error: Forbidden status: done
-error: changed_files needs at least 1 item(s)
-error: commands needs at least 1 item(s)
-error: evidence needs at least 1 item(s)
-```
+## What Is Stored
 
-## Create A Receipt Draft
+The receipt stores:
 
-```bash
-doneproof new \
-  --task "Add health check endpoint" \
-  --changed-file app/main.py \
-  --command "passed:pytest tests/test_health.py" \
-  --evidence "test:pytest tests/test_health.py passed" \
-  --risk "Manual browser check not performed"
-```
+- sanitized command text;
+- result, exit code, timeout state, and duration;
+- SHA-256 of the sanitized output plus byte and line counts;
+- SHA-256 of the selected Git patch and untracked file bytes;
+- privacy-safe changed paths;
+- operating system, architecture, and Python version;
+- an integrity digest over the complete Captured Proof object.
 
-Then:
+It does not store raw command output or Git diff content.
 
-```bash
-doneproof check
-doneproof report
-```
+## Trust And Privacy Boundary
 
-## Add Git Diff Evidence
+Known credential shapes and local home paths are masked before command output is
+shown or hashed. Redaction is defense in depth, not a mathematical guarantee
+against every possible secret format.
 
-```bash
-doneproof evidence git-diff
-```
+The integrity digest makes internal mutations detectable, but it is not a
+signature or remote attestation. Someone who can edit the receipt can also
+recompute an unsigned digest. DoneProof still requires review of the real code,
+diff, and repository controls.
 
-Expected:
-
-```text
-created: .doneproof/evidence/git-diff-summary.txt
-```
-
-The summary records changed paths and addition/deletion counts. Full diff content is intentionally omitted so receipts stay reviewable without becoming a secret sink.
+Captured Proof is an unreleased `v0.6` candidate. The public release remains
+`v0.5.0` until privacy, external maintainer feedback, and release gates close.

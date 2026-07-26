@@ -1,197 +1,167 @@
-# Launch Copy
+# Factbound Run Launch Copy
 
-Status: ready to copy, not posted.
+Status: stage-two draft; not approved or posted.
 
-Use one post first. Watch replies for confusion around install, PyPI, GitHub Actions, or whether DoneProof claims to verify correctness.
+Do not publish this copy until the release gates in `docs/LAUNCH_PLAN.md` are
+closed, including the external-adoption, exact-release privacy, and owner
+approval gates. **Factbound Run** is the proposed product identity; `DoneProof`
+remains the current repository, package, and CLI compatibility identifier.
+Start with one channel, answer real objections, and revise only from observed
+feedback.
 
-## X Short
+## Message Contract
 
-Agent summaries are not evidence.
+- Product: Factbound Run.
+- Category: review receipts for AI code changes.
+- Hook: The agent says it passed. Show the run.
+- Promise: Turn the check you already run into a shareable Review Receipt tied
+  to the current Git change.
+- Mechanism: Captured Proof connects one observed command result to the
+  selected Git scope.
+- Object: Review Receipt.
+- Boundary: it records observed local evidence. It does not prove correctness,
+  security, authorship, or approval.
 
-DoneProof is a small local CLI that makes coding agents leave a receipt before handoff:
+## X
 
-- changed files
-- commands run
-- evidence
-- risks
-- review status
+The agent says it passed. Show the run.
 
-It says `awaiting_review`, not `done`.
+Factbound Run turns one local check into a shareable Review Receipt tied to the
+current Git change, through its Captured Proof mechanism.
 
-No proof, no done.
+It records observed evidence. It does not replace code review, security review,
+or judgment.
 
 https://github.com/giugiu-a11y/doneproof
 
-## X Builder Version
-
-I kept seeing the same failure mode with coding agents.
-
-Not "bad code". False confidence.
-
-The agent says "done", but the handoff does not clearly answer:
-
-- what changed?
-- what ran?
-- what evidence exists?
-- what risk remains?
-- is this approved, or just ready for review?
-
-So I built DoneProof.
-
-It is a small local CLI for verification receipts:
-
-```bash
-doneproof init
-doneproof new
-doneproof check
-doneproof report
-doneproof badge
-doneproof evidence git-diff
-```
-
-It works with Codex, Claude Code, Cursor, Aider, Cline, OpenCode, OpenClaw-style local agents, and Hermes-style orchestrators because the contract is just files plus JSON.
-
-Human review stays final. The agent provides evidence.
-
-Repo: https://github.com/giugiu-a11y/doneproof
+Try it on one real change and tell me: did the receipt reduce review work, make
+no difference, or add ceremony?
 
 ## LinkedIn
 
-I like AI coding agents. I do not like confident handoffs with weak proof.
+AI coding agents can produce convincing summaries before a reviewer has enough
+evidence to trust the change.
 
-The painful failures are not always model failures. A lot of them are operational:
+Factbound Run turns one local check into a shareable Review Receipt tied to the
+current Git change. Its Captured Proof mechanism is currently distributed from
+the `doneproof` repository and CLI while the workflow is being validated. The
+receipt records:
 
-- the summary sounds finished;
-- the tests were not actually run;
-- changed files are vague;
-- risk is hidden inside confident language;
-- the next agent trusts the previous agent instead of checking the repo.
+- the exact command;
+- its observed exit code and duration;
+- the selected changed files;
+- privacy-safe digests for output and Git scope;
+- an explicit `awaiting_review` status.
 
-DoneProof is my small answer to that.
+That boundary matters: Captured Proof records what ran. It does not claim the
+code is correct, secure, or approved.
 
-It makes the agent leave a local receipt before handoff:
+The goal is a smaller review gap between “the agent says it passed” and “I can
+inspect the evidence.”
 
-- changed files;
-- commands run;
-- evidence;
-- residual risks;
-- review status.
+https://github.com/giugiu-a11y/doneproof
 
-The default successful status is `awaiting_review`, not `done`.
-
-It does not replace tests, CI, security review, QA, or human judgment. It makes those steps easier to trust because the handoff is concrete.
-
-No proof, no done.
-
-Repo: https://github.com/giugiu-a11y/doneproof
-
-## Technical Thread
-
-1. Coding agents are getting better. The operating layer around them is still messy.
-2. The expensive failure is not always wrong code. Often it is a confident handoff with weak evidence.
-3. "Done" is not a useful status when a human still has to review the work.
-4. DoneProof adds a tiny receipt contract to the repo.
-5. A receipt records changed files, commands, evidence, and risks.
-6. `doneproof check` rejects missing proof and premature completion language.
-7. `doneproof report --format json` gives automation a stable output.
-8. `doneproof badge --format markdown` gives PRs a compact receipt badge.
-9. `doneproof evidence git-diff --mode staged` keeps diff evidence focused.
-10. The GitHub Action can fail a PR when the receipt is missing or weak.
-11. It does not replace tests, CI, review, security, or QA.
-12. It makes those steps easier to trust because the handoff is concrete.
-
-Repo: https://github.com/giugiu-a11y/doneproof
+I am looking for maintainers willing to try it on one public-safe change and
+report whether it reduced review work, made no difference, or added ceremony.
 
 ## Hacker News
 
-Title options:
+Preferred title:
 
-- Show HN: DoneProof - verification receipts for AI agent work
-- Show HN: No proof, no done for coding agents
-- Show HN: A local receipt checker for AI coding agents
+> Show HN: Factbound Run — review receipts for AI code changes
 
 Post:
 
-I made a small local CLI for a problem I kept hitting with coding agents: they can sound finished before they have left enough evidence to review.
+I built Factbound Run after repeatedly seeing coding-agent handoffs that
+sounded complete but did not make the executed check easy to review.
 
-DoneProof creates and checks a receipt with changed files, commands run, evidence, residual risks, and review status.
+Its Captured Proof mechanism runs one command without a shell and writes a
+Review Receipt tied to the selected Git change. It records the observed exit
+code, duration, and privacy-safe digests without storing raw command output or
+Git diff content.
 
-It is not an agent, dashboard, or hosted service. It is a small pressure point around handoffs.
+The successful review state is `awaiting_review`, not `done`.
 
-The default successful status is `awaiting_review`, not `done`.
-
-Repo: https://github.com/giugiu-a11y/doneproof
-
-## Reddit / Community
-
-I made a small open-source CLI for a problem I kept hitting with coding agents: they can sound finished before they have left enough evidence to review.
-
-DoneProof creates and checks a local receipt with:
-
-- changed files;
-- commands run;
-- evidence;
-- residual risks;
-- review status.
-
-It is deliberately not an agent and not a dashboard. It is a pressure point around agent handoffs.
-
-The default successful status is `awaiting_review`, not `done`.
+It is deliberately a local evidence layer, not an agent, hosted dashboard, or
+claim that the code is correct.
 
 Repo: https://github.com/giugiu-a11y/doneproof
 
-I would especially like feedback from people using Codex, Claude Code, Cursor, Aider, Cline, OpenCode, OpenClaw-style local agents, Hermes-style orchestrators, or custom local agents.
+## Reddit / Developer Community
+
+I am looking for maintainer feedback on a narrow problem: reviewing the check
+an AI coding agent says it ran.
+
+Factbound Run uses Captured Proof to turn one local command into a Review
+Receipt tied to the current Git change. The receipt contains the observed
+result and review state, while omitting raw output and diff content.
+
+It does not replace CI or human review. It makes one check easier to inspect and
+share.
+
+If you maintain a repository that accepts agent-authored changes, I would value
+one concrete test: run it on a public-safe change and report whether the receipt
+reduced review work, made no difference, or added ceremony.
+
+Repo: https://github.com/giugiu-a11y/doneproof
 
 ## Reply Templates
 
-If someone asks "Does this prove the code is correct?":
+If someone asks “Does this prove the code is correct?”:
 
 ```text
-No. DoneProof does not replace tests, code review, security review, or QA.
-
-It makes the handoff concrete: changed files, commands run, evidence, risks, and review status.
+No. Captured Proof records one observed local check and binds it to the selected
+Git change. Correctness, security, coverage, and approval still require their
+own review.
 ```
 
-If someone asks "Why not just use CI?":
+If someone asks “Why not just use CI?”:
 
 ```text
-CI tells you what checks ran. DoneProof tells you what the agent claims it changed, what evidence it left, and what still needs review.
-
-They work well together.
+CI remains essential. Captured Proof addresses the handoff before or alongside
+CI: which local check ran, what Git scope it covered, and what still needs
+review. The two layers complement each other.
 ```
 
-If someone asks "Why no PyPI?":
+If someone asks “What can I safely share?”:
 
 ```text
-GitHub install is intentional for the first public pass. I want feedback on the contract before adding another package surface.
+The receipt omits raw command output and Git diff content. Known credential and
+home-path shapes are masked before output is displayed or hashed. Review every
+receipt before sharing because no redactor can recognize every secret format.
 ```
 
-## Positioning Lines
+If someone asks “Why is the repository named DoneProof?”:
 
-- Agent summaries are not evidence.
-- Make AI handoffs reviewable.
-- Keep agents humble: awaiting review, not done.
-- A receipt layer for coding agents.
-- Local-first proof before human review.
+```text
+`DoneProof` is the current repository, package, and CLI compatibility name.
+Factbound Run is the proposed product identity. Captured Proof is the mechanism:
+run one check and receive a Review Receipt tied to the Git change. The public
+identifiers stay stable until the workflow earns external repeat use and one
+atomic migration is explicitly approved.
+```
 
-## DoneProof System Context
+## Product Boundary
 
-DoneProof is the evidence layer in a three-part local control system:
+Factbound Run does not manage session selection, cross-session continuity, or
+memory promotion. Factbound Continuity and Factbound Memory remain private;
+Continuity Loop and Memory Boundary are their mechanisms.
 
-1. DoneProof Continuity Loop detects stale re-entry before work resumes.
-2. DoneProof records a reviewable receipt for the work itself.
-3. DoneProof Memory Boundary promotes only evidence-backed state into shared handoffs.
-
-Use this context when someone asks whether DoneProof also manages session selection or agent memory. The three projects are complementary, and each remains independently useful.
+Do not present the two private products as launched, integrated, public, or
+required companions to Factbound Run. Factbound is a naming architecture, not
+evidence that a three-product suite has shipped.
 
 ## Manual Posting Checklist
 
-- Confirm the repo is public.
-- Confirm badges are green.
-- Confirm `v0.5.0` is visible.
-- Run the GitHub install command once.
-- Open the README in a logged-out or private browser window.
-- Post one short version first.
-- Watch replies for confusion around install, PyPI, GitHub Action, or review status.
-- Do not claim DoneProof verifies correctness.
-- Do not mention private systems, clients, internal repo names, local paths, or operational details.
+- Confirm the exact release candidate is the reviewed and published `v0.6.0`
+  tag.
+- Confirm all required checks are green on that exact commit.
+- Repeat the privacy scan after the final release diff.
+- Run the public install and Captured Proof path in a clean environment.
+- Open the README and demo asset while logged out.
+- Confirm the release gates and owner approval are recorded.
+- Publish one channel only; observe before adapting the next channel.
+- Do not add unsupported adoption, performance, security, or correctness
+  claims.
+- Do not expose private systems, clients, paths, prompts, logs, or operational
+  details.

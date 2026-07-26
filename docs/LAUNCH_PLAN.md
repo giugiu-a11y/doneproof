@@ -1,63 +1,150 @@
-# Launch Plan
+# Factbound Run Launch Plan
 
-Status: ready after the `v0.5.0` tag and clean-install smoke pass.
+Status: release candidate in public draft review; market validation active;
+release and distribution not yet approved.
 
 ## Goal
 
-Make DoneProof easy to understand in one minute and easy to try in five minutes.
+Prove that a Factbound Run **Review Receipt**, created through **Captured
+Proof**, reduces review ambiguity for maintainers handling AI-authored code
+changes. The goal is external use, not impressions.
+
+## Primary User
+
+A repository maintainer or senior reviewer who receives an agent-authored
+change and needs to answer:
+
+> What check actually ran against this Git change, and what still requires
+> human review?
+
+Other agent users may benefit, but they are not the launch audience until the
+maintainer workflow is proven.
+
+## Positioning
+
+Product: **Factbound Run**.
+
+Category: **review receipts for AI code changes**.
+
+Hook:
+
+> **The agent says it passed. Show the run.**
+
+Core promise:
+
+> Turn the check you already run into a shareable Review Receipt tied to the
+> current Git change.
+
+The entry wedge is deliberately narrow: one existing command becomes a
+reviewable receipt without requiring an account, agent integration, policy
+file, CI change, hosted control plane, or cryptographic claim.
+
+This is not an AI code reviewer, agent runtime, policy engine, signed
+attestation system, CI replacement, or proof that code is correct. Broader
+products already serve those categories. Market validation must prove that the
+smaller activation surface is valuable on its own.
+
+## Activation Event
+
+A design partner brings one authorized, public-safe, agent-authored change and
+one real repository check. The maintainer runs the command in a repository they
+control; the first trial may be guided and requires no product integration.
+
+The maintainer:
+
+1. installs the candidate during validation, or the public release after
+   approval;
+2. runs one real check with `doneproof capture`;
+3. validates the receipt with `doneproof check` and `doneproof schema-check`;
+4. shares or reviews the receipt against the same Git change;
+5. understands that the result is `awaiting_review`, not approval.
+
+The public demonstration must show this loop in less than 60 seconds.
+
+## Distribution Sequence
+
+1. Talk directly with five maintainers who already review agent-authored
+   changes.
+2. Record concrete pain, objections, and workflow constraints; an invitation
+   alone does not count as feedback.
+3. Send at most one follow-up in the documented window.
+4. Offer a guided five-minute trial using `docs/VALIDATION_TRIAL.md`; keep a
+   self-serve path for maintainers who prefer it.
+5. Ask the maintainer to run it on one real change and report the review
+   effect, missing evidence, competitive alternative, and repeat intent.
+6. Confirm one repeat use without coaching.
+7. Repeat the privacy and release review on the exact candidate.
+8. Keep the approved naming architecture frozen: **Factbound Run** as the
+   product, **Captured Proof** as the mechanism, **Review Receipt** as the
+   shareable object, and `DoneProof` as the current compatibility identifier.
+9. Publish `v0.6.0` only after owner approval.
+10. Use one public channel first, learn from replies, then adapt the next
+   channel.
+
+## Advancement Gates
+
+All are required before a public launch:
+
+- at least two of five maintainers confirm the review pain with workflow-level
+  detail;
+- at least one external real-change receipt is produced and reviewed;
+- at least one external user repeats the workflow;
+- the exact release diff, assets, install path, and required checks pass;
+- the owner approves the release and first distribution post.
+
+Stars, views, clones, invitations, and friendly compliments are telemetry. They
+do not count as adoption.
+
+## Decision Rules
+
+- If maintainers understand the pain but do not run the workflow, reduce
+  activation friction before adding features.
+- If two maintainers independently prefer CI or an existing proof/review tool,
+  treat that as competitive rejection: revise the handoff use case or stop the
+  release instead of adding features blindly.
+- If privacy concerns block sharing, improve the share boundary before adding
+  richer evidence.
+- If external users run it once but do not repeat, investigate the review
+  moment and integration surface; do not manufacture a suite.
+- Add PyPI only when public install friction is observed and the readiness gate
+  is satisfied.
+
+## Naming Decision
+
+`DoneProof` has an active exact-name collision outside developer tools and a
+same-category public repository collision. It therefore remains the current
+repository, package, and CLI compatibility identifier, not a future master
+brand.
+
+- The working master brand is **Factbound**: agent work that stays bound to
+  evidence.
+- The public product is **Factbound Run**. The portfolio category is evidence
+  controls for AI coding agents; the acquisition category remains the narrower
+  review receipts for AI code changes.
+- Keep the current identifiers stable through validation so the public
+  candidate remains reproducible.
+- Lead with Factbound Run, the Review Receipt object, and the Captured Proof
+  mechanism, not the compatibility repository name.
+- Do not rename the repository, package, CLI, schema, default branch, or release
+  artifacts before external validation and explicit approval of one atomic
+  migration.
+- Availability screening is not trademark or legal clearance.
+
+## Scope Discipline
+
+- Factbound Run is the product; Captured Proof is its acquisition mechanism;
+  Review Receipt is the object users create and share.
+- Do not partially rename the repository, package, CLI, documentation, or
+  release artifacts before the owner approves one atomic migration.
+- Factbound Continuity and Factbound Memory remain private. Continuity Loop and
+  Memory Boundary are their named mechanisms.
+- Do not create another public repository, dashboard, telemetry layer, hosted
+  service, or paid infrastructure to compensate for missing adoption.
 
 ## Current Public State
 
-- Public repo: https://github.com/giugiu-a11y/doneproof
-- Current release: `v0.5.0`
-- GitHub install path works from the public tag.
-- CI and Action Smoke are required on `main`.
-- Secret scanning and push protection are enabled.
-- Open issue backlog is intentionally small and public.
-
-## Audience
-
-- developers using Codex, Claude Code, Cursor, Aider, Cline, or OpenCode;
-- teams using OpenClaw-style local agents or Hermes-style orchestrators;
-- founders letting agents touch multiple repos;
-- maintainers reviewing agent-authored pull requests;
-- small teams that need lightweight handoff discipline.
-
-## Launch Order
-
-1. Post one short X/LinkedIn version manually.
-2. Watch comments for confusion around "does it prove correctness?" or "why not PyPI?"
-3. Fix README/docs if the same confusion appears twice.
-4. Post the longer LinkedIn version after the short post lands.
-5. Use Hacker News or Reddit only after one outside person confirms the README is clear.
-
-## What To Watch
-
-- Do people understand the problem without a call?
-- Can they install it from GitHub?
-- Do they ask for PyPI?
-- Do they ask for richer command evidence?
-- Do they use the GitHub Action?
-- Do they star it because the idea is sharp, or only because they know us?
-
-## Do Not Do Yet
-
-- Do not publish to PyPI before install feedback.
-- Do not turn it into a dashboard.
-- Do not add telemetry.
-- Do not claim it verifies correctness.
-- Do not post private system details as origin story.
-- Do not launch a second repo before DoneProof gets at least one real external signal.
-
-## Success Signals
-
-- one confirmed external user completes the clean-install path;
-- one real issue or feature request comes from an external workflow;
-- one external repository tries the GitHub Action;
-- one clear request shapes the next release.
-
-Stars, views and clones are useful telemetry, but they do not count as confirmed adoption.
-
-## New Repository Gate
-
-Do not create another public product repo until DoneProof has at least three confirmed external users, one qualified integration, one accepted upstream contribution, and two consecutive weekly cycles with product, demo, note, distribution, upstream and review evidence.
+- Repository: https://github.com/giugiu-a11y/doneproof
+- Stable release: `v0.5.0`
+- Captured Proof: unreleased public draft in pull request #35
+- Release truth: engineering evidence can qualify the candidate, but only
+  external use can qualify the market claim.

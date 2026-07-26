@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "doneproof"
-version = "0.5.0"
-description = "Verification receipts for AI agent work. No proof, no done."
+version = "0.6.0"
+description = "One real check, one Git-aware receipt for an AI code change."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
@@ -37,7 +37,8 @@ Issues = "https://github.com/giugiu-a11y/doneproof/issues"
 
 [project.optional-dependencies]
 dev = [
-  "build>=1.2",
+  "build>=1.4,!=1.5.1",
+  "Pillow>=12.3.0",
   "pytest>=9.0.3",
   "ruff>=0.15"
 ]
