@@ -21,8 +21,7 @@ maintainer workflow is proven.
 
 ## Positioning
 
-Category: a lightweight, local, Git-aware check receipt for AI-authored code
-changes.
+Category: local check evidence for AI code changes.
 
 Core promise:
 
@@ -68,7 +67,9 @@ The public demonstration must show this loop in less than 60 seconds.
    effect, missing evidence, competitive alternative, and repeat intent.
 6. Confirm one repeat use without coaching.
 7. Repeat the privacy and release review on the exact candidate.
-8. Resolve the product-name gate before a release or broad distribution.
+8. Keep the approved naming architecture frozen: `DoneProof` as the current
+   compatibility identifier, `Captured Proof` as the mechanism, and no
+   umbrella brand.
 9. Publish `v0.6.0` only after owner approval.
 10. Use one public channel first, learn from replies, then adapt the next
    channel.
@@ -101,20 +102,22 @@ do not count as adoption.
 - Add PyPI only when public install friction is observed and the readiness gate
   is satisfied.
 
-## Product-Name Gate
+## Naming Decision
 
 `DoneProof` has an active exact-name collision outside developer tools and a
-same-category public repository collision. With no qualified external
-activation yet, keeping it for a broad launch creates avoidable discovery,
-identity, and future migration risk.
+same-category public repository collision. It therefore remains the current
+repository, package, and CLI compatibility identifier, not a future master
+brand.
 
-- Keep the current repository, package, and CLI identifiers stable during the
-  draft validation so the public candidate remains reproducible.
-- Do not release or broadly distribute under `DoneProof` until the owner
-  approves either a replacement or an explicit exception.
-- A replacement must pass exact-name searches across developer repositories,
-  package registries, current web products, and relevant domains before an
-  atomic migration is planned.
+- Keep the current identifiers stable through validation so the public
+  candidate remains reproducible.
+- Lead with the category `Local check evidence for AI code changes` and the
+  mechanism `Captured Proof`, not the repository name.
+- Do not create an umbrella brand or reopen a rename before external repeat
+  use proves that a broader architecture is needed.
+- If evidence later justifies a replacement, it must pass exact-name searches
+  across developer repositories, package registries, current web products, and
+  relevant domains before an atomic migration is planned.
 - Availability screening is not trademark or legal clearance.
 
 ## Scope Discipline

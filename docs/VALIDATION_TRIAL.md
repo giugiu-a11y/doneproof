@@ -28,7 +28,7 @@ receipt before sharing it.
 Requires Python 3.10+ and Git:
 
 ```bash
-python3 -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@feature/captured-proof-v0.6"
+python3 -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@038498b4ca41926150e4952a7f3eabf1c0f371f0"
 doneproof doctor
 doneproof capture --task "Review this change" -- git diff --check
 doneproof check

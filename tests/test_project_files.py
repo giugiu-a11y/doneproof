@@ -185,7 +185,7 @@ def test_readme_explains_relevance() -> None:
 def test_readme_has_one_coherent_captured_proof_activation_path() -> None:
     readme = ROOT.joinpath("README.md").read_text(encoding="utf-8")
 
-    assert "One real check. One Git-aware receipt for an AI code change." in readme
+    assert "Local check evidence for AI code changes." in readme
     assert "Your agent says the check passed. Review what actually ran." in readme
     assert (
         "**Captured Proof** runs your existing check locally and creates a shareable"
@@ -197,6 +197,10 @@ def test_readme_has_one_coherent_captured_proof_activation_path() -> None:
     assert "It records locally observed execution evidence." in readme
     assert (
         'doneproof capture --task "Check this change" -- git diff --check'
+        in readme
+    )
+    assert (
+        "doneproof.git@038498b4ca41926150e4952a7f3eabf1c0f371f0"
         in readme
     )
     assert "doneproof report" in readme

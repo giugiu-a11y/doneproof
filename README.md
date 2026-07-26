@@ -1,6 +1,6 @@
 # DoneProof
 
-One real check. One Git-aware receipt for an AI code change.
+Local check evidence for AI code changes.
 
 Your agent says the check passed. Review what actually ran.
 
@@ -29,7 +29,7 @@ Requires Python 3.10+ and a Git repository with at least one current,
 privacy-safe change:
 
 ```bash
-python3 -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@feature/captured-proof-v0.6"
+python3 -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@038498b4ca41926150e4952a7f3eabf1c0f371f0"
 doneproof capture --task "Check this change" -- git diff --check
 doneproof report
 ```
@@ -411,6 +411,7 @@ Current public release: `v0.5.0`.
 The `main` branch is checked by CI and by an Action Smoke workflow that runs the composite action against the passing receipt fixture.
 
 Captured Proof `v0.6` is an unreleased candidate in public draft review. A clean
-demonstration exists; the product-name gate, final privacy review, qualified
-external maintainer feedback, and the normal release gate still have to close
-before publication.
+demonstration and candidate privacy review exist. Release remains blocked on
+qualified maintainer pain confirmation, one external real-change receipt, one
+repeat use, a final exact-release privacy and engineering rerun, and explicit
+owner approval.

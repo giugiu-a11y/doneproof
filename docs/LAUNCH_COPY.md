@@ -3,10 +3,10 @@
 Status: stage-two draft; not approved or posted.
 
 Do not publish this copy until the release gates in `docs/LAUNCH_PLAN.md` are
-closed, including the product-name decision. `DoneProof` remains only the
-current repository, package, and CLI compatibility identifier during
-validation. Start with one channel, answer real objections, and revise only
-from observed feedback.
+closed, including the external-adoption, exact-release privacy, and owner
+approval gates. `DoneProof` remains the current repository, package, and CLI
+compatibility identifier. It is not an umbrella brand. Start with one channel,
+answer real objections, and revise only from observed feedback.
 
 ## Message Contract
 
