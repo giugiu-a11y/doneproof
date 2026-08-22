@@ -16,7 +16,7 @@ DoneProof makes AI agent handoffs auditable before a human trusts them.
 
 ## What It Catches Today
 
-DoneProof v0.2 catches:
+DoneProof v0.5.0 catches:
 
 - missing receipt files;
 - invalid JSON receipts;
@@ -33,7 +33,7 @@ DoneProof v0.2 catches:
 
 ## What It Does Not Catch Yet
 
-DoneProof v0.2 does not prove:
+DoneProof v0.5.0 does not prove:
 
 - the command output is authentic;
 - the tests cover the right behavior;

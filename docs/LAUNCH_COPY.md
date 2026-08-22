@@ -6,17 +6,15 @@ Use one post first. Watch replies for confusion around install, PyPI, GitHub Act
 
 ## X Short
 
-Agent summaries are not evidence.
+AI can say “done” before the work is really ready.
 
-DoneProof is a small local CLI that makes coding agents leave a receipt before handoff:
+DoneProof asks your coding AI to leave a receipt:
 
-- changed files
-- commands run
-- evidence
-- risks
-- review status
+- what changed
+- what it checked
+- what still needs attention
 
-It says `awaiting_review`, not `done`.
+So you get something you can inspect, not just “trust me.”
 
 No proof, no done.
 
@@ -24,21 +22,19 @@ https://github.com/giugiu-a11y/doneproof
 
 ## X Builder Version
 
-I kept seeing the same failure mode with coding agents.
-
-Not "bad code". False confidence.
+I kept seeing the same problem with coding AI: it sounded finished before the work was actually ready to trust.
 
 The agent says "done", but the handoff does not clearly answer:
 
 - what changed?
-- what ran?
-- what evidence exists?
-- what risk remains?
-- is this approved, or just ready for review?
+- what did it check?
+- what proof did it leave?
+- what could still go wrong?
+- has a person reviewed it yet?
 
 So I built DoneProof.
 
-It is a small local CLI for verification receipts:
+It gives each AI coding job a small receipt you can inspect:
 
 ```bash
 doneproof init
@@ -49,37 +45,37 @@ doneproof badge
 doneproof evidence git-diff
 ```
 
-It works with Codex, Claude Code, Cursor, Aider, Cline, OpenCode, OpenClaw-style local agents, and Hermes-style orchestrators because the contract is just files plus JSON.
+It works with Codex, Claude Code, Cursor and other coding tools.
 
-Human review stays final. The agent provides evidence.
+The AI leaves the receipt. A person still makes the final decision.
 
 Repo: https://github.com/giugiu-a11y/doneproof
 
 ## LinkedIn
 
-I like AI coding agents. I do not like confident handoffs with weak proof.
+I like using AI to write code. I do not like having to guess whether its confident “done” is real.
 
-The painful failures are not always model failures. A lot of them are operational:
+The painful problems are often simple:
 
 - the summary sounds finished;
 - the tests were not actually run;
-- changed files are vague;
-- risk is hidden inside confident language;
-- the next agent trusts the previous agent instead of checking the repo.
+- nobody can quickly see what changed;
+- remaining risks are hidden behind confident language;
+- the next AI trusts the previous answer instead of checking the work.
 
 DoneProof is my small answer to that.
 
-It makes the agent leave a local receipt before handoff:
+It asks the AI to leave a receipt:
 
 - changed files;
-- commands run;
-- evidence;
-- residual risks;
-- review status.
+- checks it says it ran;
+- proof it saved;
+- things that still need attention;
+- whether a person has reviewed it.
 
 The default successful status is `awaiting_review`, not `done`.
 
-It does not replace tests, CI, security review, QA, or human judgment. It makes those steps easier to trust because the handoff is concrete.
+It does not replace tests or people. It replaces a vague “trust me” with something you can inspect.
 
 No proof, no done.
 
@@ -112,11 +108,11 @@ Title options:
 
 Post:
 
-I made a small local CLI for a problem I kept hitting with coding agents: they can sound finished before they have left enough evidence to review.
+I made a small open-source tool for a problem I kept hitting with coding AI: it can sound finished before it leaves enough proof to check the work.
 
-DoneProof creates and checks a receipt with changed files, commands run, evidence, residual risks, and review status.
+DoneProof creates and checks a receipt showing what changed, what the AI says it checked, what proof it left, and what still needs attention.
 
-It is not an agent, dashboard, or hosted service. It is a small pressure point around handoffs.
+It runs locally. It is not another AI and does not send your project to a hosted dashboard.
 
 The default successful status is `awaiting_review`, not `done`.
 
@@ -124,17 +120,17 @@ Repo: https://github.com/giugiu-a11y/doneproof
 
 ## Reddit / Community
 
-I made a small open-source CLI for a problem I kept hitting with coding agents: they can sound finished before they have left enough evidence to review.
+I made a small open-source tool for a problem I kept hitting with coding AI: it can sound finished before it leaves enough proof to check the work.
 
 DoneProof creates and checks a local receipt with:
 
 - changed files;
-- commands run;
-- evidence;
-- residual risks;
-- review status.
+- checks the AI says it ran;
+- proof it saved;
+- things that still need attention;
+- whether a person has reviewed it.
 
-It is deliberately not an agent and not a dashboard. It is a pressure point around agent handoffs.
+It runs locally. It is not another AI and not another hosted dashboard.
 
 The default successful status is `awaiting_review`, not `done`.
 
@@ -168,21 +164,10 @@ GitHub install is intentional for the first public pass. I want feedback on the 
 
 ## Positioning Lines
 
-- Agent summaries are not evidence.
+- When AI says “done,” ask for the receipt.
 - Make AI handoffs reviewable.
-- Keep agents humble: awaiting review, not done.
-- A receipt layer for coding agents.
-- Local-first proof before human review.
-
-## DoneProof System Context
-
-DoneProof is the evidence layer in a three-part local control system:
-
-1. DoneProof Continuity Loop detects stale re-entry before work resumes.
-2. DoneProof records a reviewable receipt for the work itself.
-3. DoneProof Memory Boundary promotes only evidence-backed state into shared handoffs.
-
-Use this context when someone asks whether DoneProof also manages session selection or agent memory. The three projects are complementary, and each remains independently useful.
+- Replace “trust me” with something you can inspect.
+- No proof, no done.
 
 ## Manual Posting Checklist
 

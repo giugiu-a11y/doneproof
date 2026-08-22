@@ -1,6 +1,6 @@
 # Launch Plan
 
-Status: ready after the `v0.5.0` tag and clean-install smoke pass.
+Status: technical launch prerequisites are present; external distribution has not been executed.
 
 ## Goal
 
@@ -23,13 +23,16 @@ Make DoneProof easy to understand in one minute and easy to try in five minutes.
 - maintainers reviewing agent-authored pull requests;
 - small teams that need lightweight handoff discipline.
 
-## Launch Order
+## GitHub-Native Launch Order
 
-1. Post one short X/LinkedIn version manually.
-2. Watch comments for confusion around "does it prove correctness?" or "why not PyPI?"
-3. Fix README/docs if the same confusion appears twice.
-4. Post the longer LinkedIn version after the short post lands.
-5. Use Hacker News or Reddit only after one outside person confirms the README is clear.
+1. Keep DoneProof and the profile README pinned; do not pin empty or private placeholders.
+2. Confirm the social preview, description, topics, release, badges, and install command in a logged-out browser.
+3. Record the baseline: views, unique visitors, clones, stars, issues, discussions, and external repositories using the Action.
+4. Publish one short post manually using `docs/LAUNCH_COPY.md`.
+5. Watch replies for confusion around "does it prove correctness?" or "why not PyPI?"
+6. Fix README/docs if the same confusion appears twice.
+7. Publish the longer version only after one outside person completes the install path.
+8. Compare the same metrics after 24 hours and 7 days; count confirmed use separately from traffic.
 
 ## What To Watch
 
@@ -57,6 +60,17 @@ Make DoneProof easy to understand in one minute and easy to try in five minutes.
 - one clear request shapes the next release.
 
 Stars, views and clones are useful telemetry, but they do not count as confirmed adoption.
+
+## Baseline Before Distribution
+
+Capture exact values immediately before the first post. Keep the distinction explicit:
+
+- `traffic`: views, unique visitors, clones, stars;
+- `interest`: a substantive issue, discussion, or reply from someone outside the project;
+- `adoption`: a confirmed clean install or an external repository using the Action;
+- `retention`: the same user returns or uses DoneProof on a second change.
+
+Never describe clones or stars as users unless a person or repository confirms actual use.
 
 ## New Repository Gate
 
