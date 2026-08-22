@@ -1,6 +1,6 @@
 # DoneProof
 
-No proof, no done.
+When AI says “done,” ask for the receipt.
 
 [![CI](https://github.com/giugiu-a11y/doneproof/actions/workflows/ci.yml/badge.svg)](https://github.com/giugiu-a11y/doneproof/actions/workflows/ci.yml)
 [![Action Smoke](https://github.com/giugiu-a11y/doneproof/actions/workflows/action-smoke.yml/badge.svg)](https://github.com/giugiu-a11y/doneproof/actions/workflows/action-smoke.yml)
@@ -8,67 +8,26 @@ No proof, no done.
 [![Release](https://img.shields.io/github/v/release/giugiu-a11y/doneproof)](https://github.com/giugiu-a11y/doneproof/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-DoneProof is a local verification layer for AI agent work. It makes agents produce a receipt before they claim work is ready.
+DoneProof is a free, open-source tool for people who use AI to write code. Before the AI says the job is finished, DoneProof asks it to leave a simple receipt:
 
-It does not replace review. It makes review harder to fake.
+- what it changed;
+- what checks it says it ran;
+- what proof it saved;
+- what still needs attention;
+- whether a person has reviewed it.
+
+It does not magically prove that the code is correct. It turns a vague “trust me, it’s done” into something you can actually inspect.
 
 ![DoneProof terminal demo](docs/assets/doneproof-demo.gif)
 
-## What You Get
-
-- a small CLI for receipts, checks, reports, and git diff evidence;
-- a composite GitHub Action for pull request gates;
-- integration templates for Codex, Claude Code, Cursor, OpenCode, OpenClaw-style agents, and Hermes-style orchestrators;
-- review language that blocks agents from claiming approval early.
-
-See the visual walkthrough in [docs/DEMO.md](docs/DEMO.md).
-
-## Why It Exists
-
-DoneProof comes from real multi-agent work where the expensive failures were not model intelligence failures.
-
-They were operations failures:
-
-- an agent said work was ready without enough evidence;
-- a handoff lost the actual state of the project;
-- a later agent trusted a confident summary instead of checking files;
-- a task was reported as finished while review still had to happen;
-- the human had to discover missing tests, missing files, or unclear risk after the fact.
-
-DoneProof turns those lessons into a small local rule: every agent delivery needs a receipt with files, commands, evidence, and risk.
-
-## The Problem
-
-AI agents are great at saying:
-
-> Done.
-
-But did the agent:
-
-- change the files it claims it changed?
-- run the command it claims it ran?
-- preserve the evidence?
-- mention the risks?
-- avoid declaring victory before review?
-
-DoneProof adds one rule:
-
-> If there is no receipt, the work is not ready.
-
 ## Quick Start
+
+Try it in 60 seconds.
 
 Requires Python 3.10+.
 
-Install from GitHub:
-
 ```bash
-python3 -m pip install --upgrade pip
 python3 -m pip install "doneproof @ git+https://github.com/giugiu-a11y/doneproof.git@v0.5.0"
-```
-
-Use it inside a repository:
-
-```bash
 doneproof init
 doneproof new \
   --task "Add health check endpoint" \
@@ -77,13 +36,42 @@ doneproof new \
   --evidence "test:pytest passed" \
   --risk "Manual browser check not performed"
 doneproof check
-doneproof schema-check
-doneproof evidence git-diff
-doneproof evidence git-diff --mode staged
 doneproof report
-doneproof report --format json
-doneproof badge --format markdown
 ```
+
+A complete receipt can pass its checks while still being honest that a person has not reviewed the work:
+
+```text
+DoneProof: PASS
+status: awaiting_review
+```
+
+Want to look before installing? Compare a [good receipt with a bad one](examples/receipts), then see the [step-by-step demo](docs/DEMO.md).
+
+## What It Gives You
+
+- a receipt you can read before trusting the result;
+- a check that catches missing information;
+- an optional GitHub Action for pull requests;
+- ready-made instructions for Codex, Claude Code, Cursor, OpenCode, OpenClaw-style agents, and Hermes-style tools.
+
+Choose an [agent integration](docs/INTEGRATIONS.md) or add the [GitHub Action](docs/GITHUB_ACTION.md) when you want the same receipt rule in pull requests.
+
+## Why It Exists
+
+I built DoneProof after seeing the same problem in real multi-agent work.
+
+The worst problems were not always bad code. They were confident answers with weak proof:
+
+- an agent said work was ready without enough evidence;
+- important project details disappeared between conversations;
+- another AI trusted a confident summary instead of checking the files;
+- a task was reported as finished while review still had to happen;
+- a person discovered missing tests, missing files, or hidden risks too late.
+
+DoneProof turns those lessons into one small rule: every AI coding job needs a receipt.
+
+> If there is no receipt, the work is not ready.
 
 For local development on DoneProof itself:
 
@@ -331,13 +319,9 @@ It is not a replacement for tests, CI, code review, product QA, or human approva
 
 ## DoneProof System
 
-DoneProof is the evidence layer in a three-part local control system for AI coding agents:
-
-1. [DoneProof Continuity Loop](https://github.com/giugiu-a11y/doneproof-continuity-loop) sanitizes handoffs, selects the current session lineage, and detects stale re-entry before work resumes.
-2. DoneProof records changed files, commands, evidence, risks, and review status for the work itself.
-3. [DoneProof Memory Boundary](https://github.com/giugiu-a11y/doneproof-memory-boundary) keeps scratch notes private and promotes only evidence-backed state into shared handoffs.
-
-Each tool works independently. Together, they cover re-entry, execution proof, and durable shared context without replacing tests or human review.
+DoneProof is the public evidence layer for AI coding-agent work. It can be combined with
+private continuity and memory controls, but it does not depend on unpublished companion
+projects and does not replace tests or human review.
 
 ## Release Status
 
