@@ -83,6 +83,8 @@ python3 -m pip install -e ".[dev]"
 make prepublish
 ```
 
+Want to help? Start with the plain-English [contributing guide](CONTRIBUTING.md) and choose one focused problem from the [open issues](https://github.com/giugiu-a11y/doneproof/issues).
+
 ## Demo
 
 Animated walkthrough:

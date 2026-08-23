@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reworked the contributing guide into a simple first-contribution path, linked it from the README, and refreshed outdated issue-form guidance.
+- Strengthened `make prepublish` to build both wheel and source distributions, validate their PyPI metadata with Twine, and smoke-test the exact wheel it produced.
 - Pinned every external GitHub Action used by CI, security, smoke tests, and the copyable PR-comment example to a verified full commit SHA.
 - Upgraded Checkout to v7 and added a regression test that rejects mutable Action references.
 

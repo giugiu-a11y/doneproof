@@ -2,19 +2,19 @@
 
 Status: ready to copy, not posted.
 
-Use one post first. Watch replies for confusion around install, PyPI, GitHub Actions, or whether DoneProof claims to verify correctness.
+Use one post first. Pair it with `docs/assets/doneproof-social-preview.png`. Watch replies for confusion around install, PyPI, GitHub Actions, or whether DoneProof claims to verify correctness.
 
 ## X Short
 
-AI can say “done” before the work is really ready.
+AI can say “done” before the work is ready.
 
-DoneProof asks your coding AI to leave a receipt:
+DoneProof asks coding AIs to leave a receipt:
 
 - what changed
 - what it checked
 - what still needs attention
 
-So you get something you can inspect, not just “trust me.”
+Free, open source, and local.
 
 No proof, no done.
 
@@ -174,6 +174,7 @@ GitHub install is intentional for the first public pass. I want feedback on the 
 - Confirm the repo is public.
 - Confirm badges are green.
 - Confirm `v0.5.0` is visible.
+- Attach `docs/assets/doneproof-social-preview.png` and check the preview before posting.
 - Run the GitHub install command once.
 - Open the README in a logged-out or private browser window.
 - Post one short version first.

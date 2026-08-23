@@ -14,6 +14,7 @@ Make DoneProof easy to understand in one minute and easy to try in five minutes.
 - CI and Action Smoke are required on `main`.
 - Secret scanning and push protection are enabled.
 - Open issue backlog is intentionally small and public.
+- A 1280x640 social preview is ready at `docs/assets/doneproof-social-preview.png`; uploading it to GitHub still requires owner approval.
 
 ## Audience
 
@@ -26,7 +27,7 @@ Make DoneProof easy to understand in one minute and easy to try in five minutes.
 ## GitHub-Native Launch Order
 
 1. Keep DoneProof and the profile README pinned; do not pin empty or private placeholders.
-2. Confirm the social preview, description, topics, release, badges, and install command in a logged-out browser.
+2. Upload the prepared social preview, then confirm it, the description, topics, release, badges, and install command in a logged-out browser.
 3. Record the baseline: views, unique visitors, clones, stars, issues, discussions, and external repositories using the Action.
 4. Publish one short post manually using `docs/LAUNCH_COPY.md`.
 5. Watch replies for confusion around "does it prove correctness?" or "why not PyPI?"
