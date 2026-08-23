@@ -186,6 +186,15 @@ def test_social_preview_has_github_dimensions() -> None:
     assert int.from_bytes(png[20:24], "big") == 640
 
 
+def test_short_launch_copy_fits_x_character_limit() -> None:
+    launch_copy = ROOT.joinpath("docs", "LAUNCH_COPY.md").read_text(encoding="utf-8")
+    short_copy = launch_copy.split("## X Short\n", 1)[1].split("\n## ", 1)[0].strip()
+    x_weighted_copy = re.sub(r"https?://\S+", "x" * 23, short_copy)
+
+    assert len(x_weighted_copy) <= 280
+    assert "Free, open source, and local." in short_copy
+
+
 def test_prepublish_validates_the_exact_distribution_artifacts() -> None:
     script = ROOT.joinpath("scripts", "prepublish_check.sh").read_text(encoding="utf-8")
 
