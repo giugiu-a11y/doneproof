@@ -38,6 +38,8 @@ If PyPI publish causes breakage, confusion, or incorrect package ownership:
 
 Run on a clean checkout of the exact release commit:
 
+`make prepublish` already builds the wheel and source distribution, checks both with Twine, and installs the exact wheel it produced in a fresh virtual environment. The remaining steps below still apply; this automation does not change the No-Go decision by itself.
+
 1. Build artifacts (`python -m build`) and inspect metadata (`twine check dist/*`).
 2. Validate local install in a fresh virtualenv and run:
    - `doneproof --help`

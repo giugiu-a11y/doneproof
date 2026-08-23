@@ -45,6 +45,18 @@ def test_github_yaml_files_parse() -> None:
         assert yaml.safe_load(path.read_text(encoding="utf-8")), path
 
 
+def test_issue_forms_use_current_public_guidance() -> None:
+    config = ROOT.joinpath(".github", "ISSUE_TEMPLATE", "config.yml").read_text(
+        encoding="utf-8"
+    )
+    bug_report = ROOT.joinpath(
+        ".github", "ISSUE_TEMPLATE", "bug_report.yml"
+    ).read_text(encoding="utf-8")
+
+    assert "once the repository is public" not in config
+    assert "0.1.1" not in bug_report
+
+
 def test_editor_task_examples_load() -> None:
     tasks_path = ROOT / "docs" / "examples" / "vscode-tasks.json"
 
@@ -164,12 +176,31 @@ def test_release_readiness_docs_exist() -> None:
         assert path.exists(), path
 
 
+def test_prepublish_validates_the_exact_distribution_artifacts() -> None:
+    script = ROOT.joinpath("scripts", "prepublish_check.sh").read_text(encoding="utf-8")
+
+    assert "python -m build --outdir /tmp/doneproof-build-check" in script
+    assert "python -m twine check /tmp/doneproof-build-check/*" in script
+    assert "pip install /tmp/doneproof-build-check/*.whl" in script
+
+
 def test_readme_explains_relevance() -> None:
     readme = ROOT.joinpath("README.md").read_text(encoding="utf-8")
 
     assert "Why It Exists" in readme
     assert "real multi-agent work" in readme
     assert "When It Helps" in readme
+    assert "[contributing guide](CONTRIBUTING.md)" in readme
+
+
+def test_contributing_guide_has_a_beginner_path() -> None:
+    guide = ROOT.joinpath("CONTRIBUTING.md").read_text(encoding="utf-8")
+
+    assert "## Start Here" in guide
+    assert "open issues" in guide
+    assert "git clone https://github.com/YOUR-USERNAME/doneproof.git" in guide
+    assert "make check" in guide
+    assert "make prepublish" in guide
 
 
 def test_agent_integration_guides_exist() -> None:

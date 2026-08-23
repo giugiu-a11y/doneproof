@@ -21,7 +21,6 @@ UV_RUN=(uv run --extra dev --python "$PYTHON_BIN")
   /tmp/doneproof-install-venv \
   /tmp/doneproof-dev-venv \
   /tmp/doneproof-build-check \
-  /tmp/doneproof-wheel \
   /tmp/doneproof-wheel-venv
 "$RM_BIN" -rf build src/doneproof.egg-info .pytest_cache .ruff_cache
 find src tests -type d -name __pycache__ -prune -exec "$RM_BIN" -rf {} +
@@ -66,12 +65,12 @@ fi
 "$PYTHON_BIN" -m venv /tmp/doneproof-dev-venv
 /tmp/doneproof-dev-venv/bin/python -m pip install --upgrade pip >/tmp/doneproof-dev-pip-upgrade.log
 /tmp/doneproof-dev-venv/bin/python -m pip install -e ".[dev]" >/tmp/doneproof-dev-install.log
-/tmp/doneproof-dev-venv/bin/python -m build --wheel --outdir /tmp/doneproof-build-check
+/tmp/doneproof-dev-venv/bin/python -m build --outdir /tmp/doneproof-build-check
+/tmp/doneproof-dev-venv/bin/python -m twine check /tmp/doneproof-build-check/*
 
-"$PYTHON_BIN" -m pip wheel . -w /tmp/doneproof-wheel --no-deps
 "$PYTHON_BIN" -m venv /tmp/doneproof-wheel-venv
 /tmp/doneproof-wheel-venv/bin/python -m pip install --upgrade pip >/tmp/doneproof-wheel-pip-upgrade.log
-/tmp/doneproof-wheel-venv/bin/python -m pip install /tmp/doneproof-wheel/*.whl >/tmp/doneproof-wheel-install.log
+/tmp/doneproof-wheel-venv/bin/python -m pip install /tmp/doneproof-build-check/*.whl >/tmp/doneproof-wheel-install.log
 /tmp/doneproof-wheel-venv/bin/doneproof --help >/tmp/doneproof-help.log
 /tmp/doneproof-wheel-venv/bin/doneproof init --root /tmp/doneproof-installed-smoke
 git -C /tmp/doneproof-installed-smoke init -b main >/dev/null
