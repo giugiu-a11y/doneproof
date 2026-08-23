@@ -170,10 +170,20 @@ def test_release_readiness_docs_exist() -> None:
         ROOT / "scripts" / "render_demo_gif.py",
         ROOT / "docs" / "assets" / "doneproof-demo.gif",
         ROOT / "docs" / "assets" / "doneproof-demo.svg",
+        ROOT / "docs" / "assets" / "doneproof-social-preview.png",
     ]
 
     for path in required:
         assert path.exists(), path
+
+
+def test_social_preview_has_github_dimensions() -> None:
+    preview = ROOT / "docs" / "assets" / "doneproof-social-preview.png"
+    png = preview.read_bytes()
+
+    assert png[:8] == b"\x89PNG\r\n\x1a\n"
+    assert int.from_bytes(png[16:20], "big") == 1280
+    assert int.from_bytes(png[20:24], "big") == 640
 
 
 def test_prepublish_validates_the_exact_distribution_artifacts() -> None:

@@ -27,6 +27,8 @@ Status: public repo open; latest release gate documented below; social launch no
 - [x] Review `docs/LAUNCH_COPY.md` manually.
 - [x] Review `docs/PRE_GITHUB_AUDIT.md` manually.
 - [x] Review `docs/ADVERSARIAL_REVIEW.md` manually.
+- [x] Prepare and validate the 1280x640 social preview locally.
+- [ ] Upload the social preview in the GitHub repository settings and verify the public card.
 - [x] Publish GitHub repository after approval.
 - [x] Publish GitHub profile README.
 - [x] Enable GitHub secret scanning and push protection.
